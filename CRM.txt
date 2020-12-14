@@ -1,0 +1,161 @@
+#################################################################################################################
+项目开始时间：2020-12-05 16：35：15
+
+快捷键
+    --美化代码
+        ctrl + shift + alt + L
+    --设置ajax声明的快捷键
+        ajx
+
+错误(知识点)记录：
+    1、上转下需要强转，下转上不需要
+        post：
+            添加需改删除，登录与密码相关的参数
+        get：
+            其余的一律用post
+
+    2、ajax请求中url前面一定不能加/
+        $.ajax({
+              url:"workbench/activity/getUserList.do",
+
+    3、#UUID生成id
+      INSERT INTO `tbl_user`
+      VALUES
+      	(
+      		REPLACE ( UUID(), "-", "" ),
+      		'zs',
+      		'张三',
+      		'202cb962ac59075b964b07152d234b70',
+      		'zs@qq.com',
+      		'2018-11-30 23:50:55',
+      		'1',
+      		'A001',
+      		'192.168.1.1,192.168.1.2,127.0.0.1',
+      		'2018-11-22 11:37:34',
+      		'张三',
+      		NULL,
+      	    NULL
+      	);
+
+    4、jQuery对象转换为dom对象(原生js对象)
+            jQuery对象[下标]
+       dom对象转换成jQuery对象
+            $(dom)
+
+    5、MySQL中的分页是所有关系型数据库最终最为简单的
+        Limit a,b
+            a:表示略过的记录数
+            b:表示一页显示多少条记录（取多少记录）
+    6、mapper文件中
+        > 使用&gt;来表示
+        < 使用&lt;来表示
+
+    7、报错！！！！！！！！！！！！！！！！（已解决）
+        \limit #{skipCount},#{pageSize}
+            mapper文件中使用limit关键字报错，被解析成了表名
+        解决方法1：
+            limit前面加转字符 \
+            \limit就不会报错
+            不知道因为什么导致的
+
+    8、报错！！！！！！！！！！！！！！！！（未解决）
+        DEBUG [http-nio-8080-exec-10] - ==>
+            Preparing: select count(*) FROM tbl_activity a JOIN tbl_user u ON a.owner = u.id
+                    WHERE a.name like '%' ? '%' and u.name like '%' ? '%' and a.startDate > ? and a.endDate < ?
+        DEBUG [http-nio-8080-exec-10] - ==>
+            Parameters: [object Object](String), [object Object](String), [object Object](String), [object Object](String)
+        DEBUG [http-nio-8080-exec-10] - <==      Total: 1
+
+        DEBUG [http-nio-8080-exec-10] - ==>
+            Preparing: SELECT a.id, a.name, u.name AS owner, a.startDate, a.endDate
+                        FROM tbl_activity a JOIN tbl_user u ON a.owner = u.id
+                        WHERE a.name like '%' ? '%' and u.name like '%' ? '%' and a.startDate > ? and a.endDate < ?
+                        ORDER BY a.createTime desc limit ?,?
+        DEBUG [http-nio-8080-exec-10] - ==>
+            Parameters: [object Object](String), [object Object](String), [object Object](String), [object Object](String),                         0(Integer), 2(Integer)
+        DEBUG [http-nio-8080-exec-10] - <==      Total: 0
+
+
+
+
+#################################################################################################################
+1、系统设置模块settings
+    用户设计模块：登录操作
+        验证账号和密码
+            User user = 执行sql语句 select * from tbl_user where loginAct=? and loginPwd=?
+                user对象为null，说明账号密码错误
+                如果user对象不是null，说明用户账号密码正确
+                需要继续验证其他字段的信息
+                    --从user中get到
+                        expireTime 失效时间
+                        lockState  锁定状态
+                        allowIps   验证浏览器端的ip地址是否有效
+                验证登录成功
+                加入字符集过滤器
+
+                2020-12-07 09：12：56
+                要解决不通过登录页面，输入地址直接登录（解决恶意登录）
+                加入拦截器
+                    --拦截器中使用重定向，而不使用转发，
+                        重定向后会更改浏览器地址栏中的地址为重定向后的资源路径，而转发则不会更改，转发后
+                        浏览器地址栏中的路径还是之前的资源路径
+                    --拿到项目名进行拼接  /crm
+                        request.getContextPath()
+                        response.sendRedirect(request.getContextPath()+"/login.jsp");
+
+        *在webapp路径下的login.jsp中加入代码，防止登录窗口出现在子窗口中
+        if(window.top!=window){
+                        window.top.location=window.location;
+                    }
+
+    涉及到数据字典模块信息的查询
+
+
+2、工作台（核心业务）---2020-12-07 15：24：52
+    --市场活动模块：activity
+        》》点击创建按钮，打开模态窗口
+            模态窗口：
+                data-toggle="modal"
+                    表示触发该按钮，将要打开一个模态窗口
+                data-target="#createActivityModal
+                    表示打开哪个模态窗口，通过#id的方式找到该窗口
+
+                以属性和属性值的方式卸载button中，用来打开模态窗口，
+                    缺点：
+                        无法对按钮进行扩充
+                    更改方案：
+                        自己写js代码来操作
+
+        》》添加操作
+            servlet-->service-->serviceImpl-->Dao-->Dao的mapper文件
+
+            存在问题：
+                数据保存之后，再次打开模态窗口时，自动保存了上次添加时填入的数据
+                每一次执行添加操作后，需要清除上一次模态窗口中的数据
+            清空模态窗口中的数据
+                $("#activityAddForm")[0].reset();
+
+        》》展现市场活动信息列表（组合条件查询+分页查询）
+            使用pageList方法：就是发出ajax请求到后台，从后台取得最新的市场活动信息列表数据
+                            通过相应回来的数据，局部刷新到市场活动信息列表
+            什么情况下需要使用pageList方法（什么情况下需要局部刷新一下市场活动列表）
+                （1）点击左侧菜单栏中的“市场活动”超链接，需要刷新市场活动列表
+                （2）点击 添加、修改、删除、按钮之后，需要刷新市场活动列表
+                （3）点击 查询按钮之后，需要刷新市场活动列表
+                （4）点击分页组件时候
+
+        全选/取消       √（完成）
+        执行删除操作（可以批量删除）      √（完成）
+
+        点击修改按钮，可以打开修改操作的模态窗口      √（完成）
+        执行修改操作
+            更新之后，停留在当前页（未完成）2020-12-10 22：33：06
+
+        点击市场活动名称，跳转到详细信息页，展现详细信息
+        详细信息页加载完毕后，展现备注信息列表(完成)
+
+        备注添加，修改，删除
+
+
+    --线索模块：clue
+        点击创建按钮，打开添加操作模态窗口
