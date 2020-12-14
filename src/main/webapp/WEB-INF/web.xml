@@ -68,4 +68,18 @@
     </servlet-mapping>
 
 
+
+
+    <!--线索控制器-->
+    <servlet>
+        <servlet-name>ClueControllerServlet</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ClueControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClueControllerServlet</servlet-name>
+        <url-pattern>/workbench/clue/xxx.do</url-pattern>
+
+    </servlet-mapping>
+
+
 </web-app>
