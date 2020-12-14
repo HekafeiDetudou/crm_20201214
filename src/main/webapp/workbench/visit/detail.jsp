@@ -8,9 +8,9 @@
     <base href="<%=basePath%>">
     <meta charset="UTF-8">
 
-    <link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-    <script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
 
@@ -130,7 +130,7 @@
 
     <!-- 备注1 -->
     <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+        <img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
         <div style="position: relative; top: -40px; left: 40px;" >
             <h5>呵呵！</h5>
             <font color="gray">任务</font> <font color="gray">-</font> <b>拜访客户</b> <small style="color: gray;"> 2017-01-22 10:10:10 星期二由zhangsan</small>
@@ -144,7 +144,7 @@
 
     <!-- 备注2 -->
     <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+        <img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
         <div style="position: relative; top: -40px; left: 40px;" >
             <h5>哎呦！</h5>
             <font color="gray">任务</font> <font color="gray">-</font> <b>拜访客户</b> <small style="color: gray;"> 2017-01-22 10:10:10 星期二由zhangsan</small>
