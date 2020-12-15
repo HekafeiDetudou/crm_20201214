@@ -36,6 +36,18 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
+
+
+
+
+    <listener>
+        <listener-class>com.bjpowernode.crm.web.listener.SysInitListener</listener-class>
+    </listener>
+
+
+
+
+
     <!--保存用户控制器-->
     <servlet>
         <servlet-name>userControllerServlet</servlet-name>
@@ -65,6 +77,20 @@
         <url-pattern>/workbench/activity/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
         <url-pattern>/workbench/activity/updateRemark.do</url-pattern>
+    </servlet-mapping>
+
+
+
+
+    <!--线索控制器-->
+    <servlet>
+        <servlet-name>ClueControllerServlet</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ClueControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClueControllerServlet</servlet-name>
+        <url-pattern>/workbench/clue/getUserList.do</url-pattern>
+
     </servlet-mapping>
 
 

@@ -28,12 +28,12 @@ public class ClueControllerServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println("进入到线索控制器控制器");
+        System.out.println("进入到线索控制器");
 
         String path = req.getServletPath();
-        if ("/workbench/clue/xxx.do".equals(path)) {
+        if ("/workbench/clue/getUserList.do".equals(path)) {
 
-            //xxx(req, resp);
+            getUserList(req, resp);
 
         } else if ("/workbench/clue/xxx.do".equals(path)) {
 
@@ -41,4 +41,18 @@ public class ClueControllerServlet extends HttpServlet {
 
         }
     }
+
+    private void getUserList(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("获取用户信息列表");
+
+        UserService us = (UserService) ServiceFactory.getService(new UserServiceImpl());
+
+        List<User> userList = us.getUserList();
+
+        PrintJson.printJsonObj(resp,userList);
+
+    }
+
+
 }

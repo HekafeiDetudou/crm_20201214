@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 %>
@@ -8,17 +9,58 @@
     <base href="<%=basePath%>">
     <meta charset="UTF-8">
 
-    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css"
+          rel="stylesheet"/>
 
     <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
     <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-    <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript"
+            src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
     <script type="text/javascript">
 
-        $(function(){
+        $(function () {
+
+
+            //为创建按钮绑定事件，打开添加操作的模态窗口
+            $("#addBtn").click(function (){
+
+                //alert("123");
+
+                $.ajax({
+                    url:"workbench/clue/getUserList.do",
+                    data : {
+
+                    },
+                    type:"get",
+                    dataType:"json",
+                    success : function (data){
+
+                        //返回用户信息列表[{用户1},{用户2},{用户3}...]
+
+                        var html = "<option></option>";
+                        $.each(data,function (i,n){
+
+                            html += "<option value='"+n.id+"'>"+n.name+"</option>";
+
+                        })
+
+                        $("#create-clueOwner").html(html);
+
+                        //将系统当前用户设置为所有者的默认选项
+                        var id = "${user.id}";
+
+                        $("#create-clueOwner").val(id);
+
+                        //处理完所有者下拉框的数据后，打开模态窗口
+                        $("#createClueModal").modal("show");
+
+                    }
+                })
+
+            })
 
 
 
@@ -42,15 +84,17 @@
                 <form class="form-horizontal" role="form">
 
                     <div class="form-group">
-                        <label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="create-clueOwner" class="col-sm-2 control-label">所有者<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-clueOwner">
-                                <option>zhangsan</option>
+                                <%--<option>zhangsan</option>
                                 <option>lisi</option>
-                                <option>wangwu</option>
+                                <option>wangwu</option>--%>
                             </select>
                         </div>
-                        <label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="create-company" class="col-sm-2 control-label">公司<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-company">
                         </div>
@@ -61,14 +105,13 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-call">
                                 <option></option>
-                                <option>先生</option>
-                                <option>夫人</option>
-                                <option>女士</option>
-                                <option>博士</option>
-                                <option>教授</option>
+                                <c:forEach items="${appellation}" var="a">
+                                    <option value="${a.value}" >${a.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
-                        <label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="create-surname" class="col-sm-2 control-label">姓名<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-surname">
                         </div>
@@ -105,13 +148,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-status">
                                 <option></option>
-                                <option>试图联系</option>
-                                <option>将来联系</option>
-                                <option>已联系</option>
-                                <option>虚假线索</option>
-                                <option>丢失线索</option>
-                                <option>未联系</option>
-                                <option>需要条件</option>
+                                <c:forEach items="${clueState}" var="clueState">
+                                    <option value="${clueState.value}" >${clueState.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -121,20 +160,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-source">
                                 <option></option>
-                                <option>广告</option>
-                                <option>推销电话</option>
-                                <option>员工介绍</option>
-                                <option>外部介绍</option>
-                                <option>在线商场</option>
-                                <option>合作伙伴</option>
-                                <option>公开媒介</option>
-                                <option>销售邮件</option>
-                                <option>合作伙伴研讨会</option>
-                                <option>内部研讨会</option>
-                                <option>交易会</option>
-                                <option>web下载</option>
-                                <option>web调研</option>
-                                <option>聊天</option>
+                                <c:forEach items="${source}" var="source">
+                                    <option value="${source.value}" >${source.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -199,7 +227,8 @@
                 <form class="form-horizontal" role="form">
 
                     <div class="form-group">
-                        <label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-clueOwner">
                                 <option>zhangsan</option>
@@ -207,7 +236,8 @@
                                 <option>wangwu</option>
                             </select>
                         </div>
-                        <label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="edit-company" class="col-sm-2 control-label">公司<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="edit-company" value="动力节点">
                         </div>
@@ -225,7 +255,8 @@
                                 <option>教授</option>
                             </select>
                         </div>
-                        <label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+                        <label for="edit-surname" class="col-sm-2 control-label">姓名<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="edit-surname" value="李四">
                         </div>
@@ -249,7 +280,8 @@
                         </div>
                         <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-website"
+                                   value="http://www.bjpowernode.com">
                         </div>
                     </div>
 
@@ -342,8 +374,6 @@
 </div>
 
 
-
-
 <div>
     <div style="position: relative; left: 10px; top: -10px;">
         <div class="page-header">
@@ -413,7 +443,6 @@
                 </div>
 
 
-
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">手机</div>
@@ -441,10 +470,15 @@
 
             </form>
         </div>
-        <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
+        <div class="btn-toolbar" role="toolbar"
+             style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+                <button type="button" class="btn btn-primary" id="addBtn" ><span
+                        class="glyphicon glyphicon-plus"></span> 创建
+                </button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span
+                        class="glyphicon glyphicon-pencil"></span> 修改
+                </button>
                 <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
             </div>
 
@@ -454,7 +488,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr style="color: #B3B3B3;">
-                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox"/></td>
                     <td>名称</td>
                     <td>公司</td>
                     <td>公司座机</td>
@@ -466,8 +500,9 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><input type="checkbox" /></td>
-                    <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
+                    <td><input type="checkbox"/></td>
+                    <td><a style="text-decoration: none; cursor: pointer;"
+                           onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
                     <td>动力节点</td>
                     <td>010-84846003</td>
                     <td>12345678901</td>
@@ -476,8 +511,9 @@
                     <td>已联系</td>
                 </tr>
                 <tr class="active">
-                    <td><input type="checkbox" /></td>
-                    <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
+                    <td><input type="checkbox"/></td>
+                    <td><a style="text-decoration: none; cursor: pointer;"
+                           onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
                     <td>动力节点</td>
                     <td>010-84846003</td>
                     <td>12345678901</td>
