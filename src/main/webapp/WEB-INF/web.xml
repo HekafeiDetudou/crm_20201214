@@ -36,6 +36,18 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
+
+
+
+
+    <listener>
+        <listener-class>com.bjpowernode.crm.web.listener.SysInitListener</listener-class>
+    </listener>
+
+
+
+
+
     <!--保存用户控制器-->
     <servlet>
         <servlet-name>userControllerServlet</servlet-name>
