@@ -19,9 +19,23 @@
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+    <script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+    <script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+
     <script type="text/javascript">
 
         $(function () {
+
+            //引入日期控件
+            $(".time").datetimepicker({
+                minView: "month",
+                language:  'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayBtn: true,
+                pickerPosition: "top-left"
+            });
 
 
             //为创建按钮绑定事件，打开添加操作的模态窗口
@@ -63,12 +77,188 @@
             })
 
 
+            //为保存按钮绑定事件，执行线索的添加操作
+            $("#saveBtn").click(function (){
+
+                $.ajax({
+                    url:"workbench/clue/save.do",
+                    data : {
+
+                        "fullname" : $.trim($("#create-fullname").val()),
+                        "appellation" : $.trim($("#create-appellation").val()),
+                        "owner" : $.trim($("#create-clueOwner").val()),
+                        "company" : $.trim($("#create-company").val()),
+                        "job" : $.trim($("#create-job").val()),
+                        "email" : $.trim($("#create-email").val()),
+                        "phone" : $.trim($("#create-phone").val()),
+                        "website" : $.trim($("#create-website").val()),
+                        "mphone" : $.trim($("#create-mphone").val()),
+                        "state" : $.trim($("#create-state").val()),
+                        "source" : $.trim($("#create-source").val()),
+                        "description" : $.trim($("#create-description").val()),
+                        "contactSummary" : $.trim($("#create-contactSummary").val()),
+                        "nextContactTime" : $.trim($("#create-nextContactTime").val()),
+                        "address" : $.trim($("#create-address").val())
+
+
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success : function (data){
+
+                        if (data.success){
+
+                            //添加成功
+                            //刷新列表
+                            pageList(1,2);
+
+                            //清空模态窗口中的数据
+                            //$("#clueAddForm")[0].reset();
+
+                            //关闭模态窗口
+                            $("#createClueModal").modal("hide");
+
+                        }else{
+
+                            //添加失败
+                            alert("线索添加失败");
+
+                        }
+
+                    }
+                })
+
+            })
+
+
+            //页面加载完毕后，执行分页操作
+            pageList(1,2);
+
+            //为查询按钮绑定事件，触发pageList方法
+            $("#searchBtn").click(function (){
+
+                //点击查询按钮的时候，将搜索框中的信息保存起来，放到隐藏域中
+                $("#hidden-fullname").val($.trim($("#search-fullname").val()));
+                $("#hidden-owner").val($.trim($("#search-owner").val()));
+                $("#hidden-company").val($.trim($("#search-company").val()));
+                $("#hidden-phone").val($.trim($("#search-phone").val()));
+                $("#hidden-mphone").val($.trim($("#search-mphone").val()));
+                $("#hidden-state").val($.trim($("#search-cluState").val()));
+                $("#hidden-source").val($.trim($("#search-source").val()));
+
+                pageList(1,2);
+
+            })
 
         });
+
+        //分页查询
+        function pageList(pageNo,pageSize){
+
+            //alert("展现市场活动分页");
+
+            $("#search-fullname").val($.trim($("#hidden-fullname").val()));
+            $("#search-owner").val($.trim($("#hidden-owner").val()));
+            $("#search-company").val($.trim($("#hidden-company").val()));
+            $("#search-phone").val($.trim($("#hidden-phone").val()));
+            $("#search-mphone").val($.trim($("#hidden-mphone").val()));
+            $("#search-state").val($.trim($("#hidden-cluState").val()));
+            $("#search-source").val($.trim($("#hidden-source").val()));
+
+            //使用Ajax请求完成分页操作
+            $.ajax({
+                url:"workbench/clue/pageList.do",
+                data : {
+
+                    //需要为后台提供的参数
+                    "pageNo" : pageNo,
+                    "pageSize" : pageSize,
+                    //条件查询
+                    "fullname" : $.trim($("#search-fullname").val()),
+                    "company" : $.trim($("#search-company").val()),
+                    "phone" : $.trim($("#search-phone").val()),
+                    "source" : $.trim($("#search-source").val()),
+                    "owner" : $.trim($("#search-owner").val()),
+                    "mphone" : $.trim($("#search-mphone").val()),
+                    "state" : $.trim($("#search-cluState").val())
+
+                },
+                type:"get",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                        data：
+                            我们需要的市场活动信息列表
+                                [{线索1},{线索2},{线索3}...]
+                            一会分页插件需要的：查询出来的总记录条数
+                                {"total":100}
+                            拼接起来：
+                                {"total":100,"dataList":[{线索1},{线索2},{线索3}...]}
+                     */
+                    var html = "";
+
+                    //每一个n就是一个线索对象
+                    $.each(data.dataList,function (i,n){
+
+                        html += '<tr>';
+                        html += '<td><input type="checkbox" name="xz" value="'+n.id+'" /></td>';
+                        html += '<td><a style="text-decoration: none; cursor: pointer;"';
+                        html += 'onclick="window.location.href=\'workbench/clue/detail.do?id='+n.id+'\';">'+n.fullname+n.appellation+'</a></td>';
+                        html += '<td>'+n.company+'</td>';
+                        html += '<td>'+n.phone+'</td>';
+                        html += '<td>'+n.mphone+'</td>';
+                        html += '<td>'+n.source+'</td>';
+                        html += '<td>'+n.owner+'</td>';/*这里注意数据库中存储的是用户id*/
+                        html += '<td>'+n.state+'</td>';
+                        html += '</tr>';
+
+                    })
+
+                    $("#clueBody").html(html);
+
+                    //计算总页数
+                    var totalPages = data.total%pageSize==0 ? data.total/pageSize : parseInt(data.total/pageSize)+1;
+
+                    //数据处理完毕后，结合分页查询，对前端展示信息
+                    $("#cluePage").bs_pagination({
+                        currentPage: pageNo, // 页码
+                        rowsPerPage: pageSize, // 每页显示的记录条数
+                        maxRowsPerPage: 20, // 每页最多显示的记录条数
+                        totalPages: totalPages, // 总页数
+                        totalRows: data.total, // 总记录条数
+
+                        visiblePageLinks: 3, // 显示几个卡片
+
+                        showGoToPage: true,
+                        showRowsPerPage: true,
+                        showRowsInfo: true,
+                        showRowsDefaultInfo: true,
+
+                        onChangePage : function(event, data){
+                            pageList(data.currentPage , data.rowsPerPage);
+                        }
+                    });
+
+                }
+            })
+
+        }
+
 
     </script>
 </head>
 <body>
+
+
+    <%--使用隐藏域--%>
+    <input type="hidden" id="hidden-fullname" />
+    <input type="hidden" id="hidden-owner" />
+    <input type="hidden" id="hidden-company" />
+    <input type="hidden" id="hidden-phone" />
+    <input type="hidden" id="hidden-mphone" />
+    <input type="hidden" id="hidden-state" />
+    <input type="hidden" id="hidden-source" />
 
 <!-- 创建线索的模态窗口 -->
 <div class="modal fade" id="createClueModal" role="dialog">
@@ -81,7 +271,7 @@
                 <h4 class="modal-title" id="myModalLabel">创建线索</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form" id="clueAddForm" >
 
                     <div class="form-group">
                         <label for="create-clueOwner" class="col-sm-2 control-label">所有者<span
@@ -101,19 +291,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-call" class="col-sm-2 control-label">称呼</label>
+                        <label for="create-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="create-call">
+                            <select class="form-control" id="create-appellation">
                                 <option></option>
                                 <c:forEach items="${appellation}" var="a">
                                     <option value="${a.value}" >${a.text}</option>
                                 </c:forEach>
                             </select>
                         </div>
-                        <label for="create-surname" class="col-sm-2 control-label">姓名<span
+                        <label for="create-fullname" class="col-sm-2 control-label">姓名<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-surname">
+                            <input type="text" class="form-control" id="create-fullname">
                         </div>
                     </div>
 
@@ -144,9 +334,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-mphone">
                         </div>
-                        <label for="create-status" class="col-sm-2 control-label">线索状态</label>
+                        <label for="create-state" class="col-sm-2 control-label">线索状态</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="create-status">
+                            <select class="form-control" id="create-state">
                                 <option></option>
                                 <c:forEach items="${clueState}" var="clueState">
                                     <option value="${clueState.value}" >${clueState.text}</option>
@@ -169,9 +359,9 @@
 
 
                     <div class="form-group">
-                        <label for="create-describe" class="col-sm-2 control-label">线索描述</label>
+                        <label for="create-description" class="col-sm-2 control-label">线索描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="create-describe"></textarea>
+                            <textarea class="form-control" rows="3" id="create-description"></textarea>
                         </div>
                     </div>
 
@@ -187,7 +377,7 @@
                         <div class="form-group">
                             <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-nextContactTime">
+                                <input type="text" class="form-control time " id="create-nextContactTime">
                             </div>
                         </div>
                     </div>
@@ -207,7 +397,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+                <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
             </div>
         </div>
     </div>
@@ -294,13 +484,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-status">
                                 <option></option>
-                                <option>试图联系</option>
-                                <option>将来联系</option>
-                                <option selected>已联系</option>
-                                <option>虚假线索</option>
-                                <option>丢失线索</option>
-                                <option>未联系</option>
-                                <option>需要条件</option>
+                                <c:forEach items="${clueState}" var="clueState">
+                                    <option value="${clueState.value}" >${clueState.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -310,20 +496,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-source">
                                 <option></option>
-                                <option selected>广告</option>
-                                <option>推销电话</option>
-                                <option>员工介绍</option>
-                                <option>外部介绍</option>
-                                <option>在线商场</option>
-                                <option>合作伙伴</option>
-                                <option>公开媒介</option>
-                                <option>销售邮件</option>
-                                <option>合作伙伴研讨会</option>
-                                <option>内部研讨会</option>
-                                <option>交易会</option>
-                                <option>web下载</option>
-                                <option>web调研</option>
-                                <option>聊天</option>
+                                <c:forEach items="${source}" var="source">
+                                    <option value="${source.value}" >${source.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -392,43 +567,32 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">名称</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-fullname" >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">公司</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-company" >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">公司座机</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-phone" >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">线索来源</div>
-                        <select class="form-control">
+                        <select class="form-control" id="search-source">
                             <option></option>
-                            <option>广告</option>
-                            <option>推销电话</option>
-                            <option>员工介绍</option>
-                            <option>外部介绍</option>
-                            <option>在线商场</option>
-                            <option>合作伙伴</option>
-                            <option>公开媒介</option>
-                            <option>销售邮件</option>
-                            <option>合作伙伴研讨会</option>
-                            <option>内部研讨会</option>
-                            <option>交易会</option>
-                            <option>web下载</option>
-                            <option>web调研</option>
-                            <option>聊天</option>
+                            <c:forEach items="${source}" var="source">
+                                <option value="${source.value}" >${source.text}</option>
+                            </c:forEach>
                         </select>
                     </div>
                 </div>
@@ -438,7 +602,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-owner" >
                     </div>
                 </div>
 
@@ -446,27 +610,23 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">手机</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-mphone" >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">线索状态</div>
-                        <select class="form-control">
+                        <select class="form-control" id="search-cluState" >
                             <option></option>
-                            <option>试图联系</option>
-                            <option>将来联系</option>
-                            <option>已联系</option>
-                            <option>虚假线索</option>
-                            <option>丢失线索</option>
-                            <option>未联系</option>
-                            <option>需要条件</option>
+                            <c:forEach items="${clueState}" var="clueState">
+                                <option value="${clueState.value}" >${clueState.text}</option>
+                            </c:forEach>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-default">查询</button>
+                <button type="button" class="btn btn-default" id="searchBtn" >查询</button>
 
             </form>
         </div>
@@ -498,8 +658,8 @@
                     <td>线索状态</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
+                <tbody id="clueBody" >
+                <%--<tr>
                     <td><input type="checkbox"/></td>
                     <td><a style="text-decoration: none; cursor: pointer;"
                            onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
@@ -520,13 +680,13 @@
                     <td>广告</td>
                     <td>zhangsan</td>
                     <td>已联系</td>
-                </tr>
+                </tr>--%>
                 </tbody>
             </table>
         </div>
 
         <div style="height: 50px; position: relative;top: 60px;">
-            <div>
+            <%--<div>
                 <button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
             </div>
             <div class="btn-group" style="position: relative;top: -34px; left: 110px;">
@@ -557,7 +717,8 @@
                         <li class="disabled"><a href="#">末页</a></li>
                     </ul>
                 </nav>
-            </div>
+            </div>--%>
+                <div id="cluePage"></div>
         </div>
 
     </div>
