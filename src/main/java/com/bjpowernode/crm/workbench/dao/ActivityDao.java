@@ -20,4 +20,10 @@ public interface ActivityDao {
     int updateActivity(Activity activity);
 
     Activity getDetailById(String id);
+
+    List<Activity> getActivityListByClueId(String clueId);
+
+
+    List<Activity> getActivityListByName(Map<String, Object> map);
+
 }

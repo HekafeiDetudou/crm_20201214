@@ -51,7 +51,204 @@
             $(".myHref").mouseout(function(){
                 $(this).children("span").css("color","#E6E6E6");
             });
+
+            //为全选的复选框绑定事件，触发全选操作
+            $("#checkedAll").click(function (){
+
+                $("input[name=xz]").prop("checked",this.checked);
+
+            })
+
+            //子选择框，如果全部选中，那么最上面的复选框，也自动勾选
+            $("#activitySearchBody").on("click",$("input[name=xz]"),function (){
+
+                $("#checkedAll").prop("checked",$("input[name=xz]").length == $("input[name=xz]:checked").length);
+
+            })
+
+            //页面加载完毕后取出关联的市场活动信息列表
+            showActivityList();
+
+            //为关联市场活动模态窗口中的搜索框绑定事件，通过触发回车键，查询并展示出市场活动列表
+            $("#activityName").keydown(function (event){
+
+
+                if (event.keyCode==13){
+
+                    //alert("展现关联的市场活动信息列表");
+
+                    $.ajax({
+                        url:"workbench/clue/getActivityListByName.do",
+                        data : {
+
+                            "activityName" : $.trim($("#activityName").val()),
+                            "clueId" : "${c.id}"
+                        },
+                        type:"post",
+                        dataType:"json",
+                        success : function (data){
+
+                            /*
+                            * data
+                            *       [{市场活动1},{市场活动2},{市场活动3}...]
+                            * */
+
+                            var html = "";
+
+                            $.each(data,function (i,n){
+
+                                html += '<tr>';
+                                html += '<td><input type="checkbox" name="xz" value="'+n.id+'" /></td>';
+                                html += '<td>'+n.name+'</td>';
+                                html += '<td>'+n.startDate+'</td>';
+                                html += '<td>'+n.endDate+'</td>';
+                                html += '<td>'+n.owner+'</td>';
+                                html += '</tr>';
+
+                            })
+
+                            $("#activitySearchBody").html(html);
+
+                        }
+                    })
+
+                    //展现完列表后，将模态窗口的默认回车行为禁用掉
+                    return false;
+
+                }
+
+            })
+
+            //为关联按钮绑定事件
+            $("#boundBtn").click(function (){
+
+                //alert("123");
+                //拿到需要关联的acitivityId
+                //那要需要关联的clueId
+
+                var $xz = $("input[name=xz]:checked")
+                if ($xz.length == 0){
+
+                    alert("请选择要关联的市场活动");
+
+                }else{
+
+                    //选择市场活动大于等于1
+                    var param = "cid=${c.id}&";
+
+                    for (var i=0;i<$xz.length;i++){
+
+                        param += "aid="+$($xz[i]).val();
+
+                        if (i<$xz.length-1){
+                            param += "&";
+                        }
+
+                    }
+                    //alert(param);
+
+                    $.ajax({
+                        url:"workbench/clue/bound.do",
+                        data : param,
+                        type:"post",
+                        dataType:"json",
+                        success : function (data){
+
+                            if (data.success){
+
+                                //刷新所关联的线索列表
+                                showActivityList();
+
+                                //清除搜索框中的信息 复选框取消选中 清空activitySearchBody
+                                $("#activityName").val("");
+                                $("#checkedAll").prop("checked",false);
+                                $("#activitySearchBody").html("");
+
+                                //关闭当前模态窗口
+                                $("#bundModal").modal("hide");
+
+
+                            }else{
+                                alert("添加线索关联的市场活动失败");
+                            }
+                        }
+                    })
+
+                }
+
+
+
+            })
+
+
         });
+
+        //展现关联的市场活动信息列表
+        function showActivityList(){
+
+            $.ajax({
+                url:"workbench/clue/getActivityListByClueId.do",
+                data : {
+                    "clueId" : "${c.id}"
+                },
+                type:"post",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                    * data
+                    *       [{市场活动1},{市场活动2},{市场活动3}...]
+                    * */
+
+                    var html = "";
+
+                    $.each(data,function (i,n){
+
+                        html += '<tr>';
+                        html += '<td>'+n.name+'</td>';
+                        html += '<td>'+n.startDate+'</td>';
+                        html += '<td>'+n.endDate+'</td>';
+                        html += '<td>'+n.owner+'</td>';
+                        html += '<td><a href="javascript:void(0);" onclick="unBound(\''+n.id+'\')"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
+                        html += '</tr>';
+
+                    })
+
+                    $("#activityBody").html(html);
+
+                }
+            })
+
+        }
+
+        //声明解除绑定函数，点击页面中的解除绑定，触发解除绑定事件
+        function unBound(id){
+
+            //alert(id);
+            $.ajax({
+                url:"workbench/clue/unbound.do",
+                data : {
+                    "id" : id
+                },
+                type:"post",
+                dataType:"json",
+                success : function (data){
+
+                    if (data.success){
+
+                        //删除成功
+                        //调用一次展现市场活动信息列表
+                        showActivityList();
+
+                    }else {
+
+                        alert("删除失败");
+                    }
+
+                }
+            })
+
+        }
 
     </script>
 
@@ -72,7 +269,7 @@
                 <div class="btn-group" style="position: relative; top: 18%; left: 8px;">
                     <form class="form-inline" role="form">
                         <div class="form-group has-feedback">
-                            <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+                            <input type="text" class="form-control" id="activityName" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
                             <span class="glyphicon glyphicon-search form-control-feedback"></span>
                         </div>
                     </form>
@@ -80,7 +277,7 @@
                 <table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
                     <thead>
                     <tr style="color: #B3B3B3;">
-                        <td><input type="checkbox"/></td>
+                        <td><input type="checkbox" id="checkedAll" /></td>
                         <td>名称</td>
                         <td>开始日期</td>
                         <td>结束日期</td>
@@ -88,8 +285,8 @@
                         <td></td>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
+                    <tbody id="activitySearchBody" >
+                    <%--<tr>
                         <td><input type="checkbox"/></td>
                         <td>发传单</td>
                         <td>2020-10-10</td>
@@ -102,13 +299,13 @@
                         <td>2020-10-10</td>
                         <td>2020-10-20</td>
                         <td>zhangsan</td>
-                    </tr>
+                    </tr>--%>
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+                <button type="button" class="btn btn-primary" id="boundBtn">关联</button>
             </div>
         </div>
     </div>
@@ -433,8 +630,8 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
+                <tbody id="activityBody" >
+                <%--<tr>
                     <td>发传单</td>
                     <td>2020-10-10</td>
                     <td>2020-10-20</td>
@@ -447,7 +644,7 @@
                     <td>2020-10-20</td>
                     <td>zhangsan</td>
                     <td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-                </tr>
+                </tr>--%>
                 </tbody>
             </table>
         </div>

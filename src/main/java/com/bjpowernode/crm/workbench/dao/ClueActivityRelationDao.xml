@@ -5,8 +5,22 @@
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.ClueActivityRelationDao">
 	
-	
-  	
+	<delete id="unbound">
+
+        delete from tbl_clue_activity_relation where id = #{id}
+
+    </delete>
+
+
+    <insert id="bound">
+        INSERT INTO tbl_clue_activity_relation ( id, clueId, activityId )
+        VALUES
+        (#{id},
+         #{clueId},
+         #{activityId}
+        )
+    </insert>
+
 </mapper>
 
 

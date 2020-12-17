@@ -15,4 +15,8 @@ public interface ClueService {
     Clue detail(String id);
 
 
+    boolean unbound(String id);
+
+    boolean bound(Map<String, Object> map);
+
 }

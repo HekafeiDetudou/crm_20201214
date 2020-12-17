@@ -38,6 +38,19 @@
             });
 
 
+            //为全选的复选框绑定事件，触发全选操作
+            $("#checkedAll").click(function (){
+
+                $("input[name=xz]").prop("checked",this.checked)
+
+            })
+            //子选择框，如果全部选中，那么最上面的复选框，也自动勾选
+            $("#clueBody").on("click",$("input[name=xz]"),function (){
+
+                $("#checkedAll").prop("checked",$("input[name=xz]").length == $("input[name=xz]:checked").length);
+
+            })
+
             //为创建按钮绑定事件，打开添加操作的模态窗口
             $("#addBtn").click(function (){
 
@@ -648,7 +661,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr style="color: #B3B3B3;">
-                    <td><input type="checkbox"/></td>
+                    <td><input type="checkbox" id="checkedAll" /></td>
                     <td>名称</td>
                     <td>公司</td>
                     <td>公司座机</td>

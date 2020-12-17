@@ -150,6 +150,46 @@
 
     </select>
 
+    <select id="getActivityListByClueId" resultType="com.bjpowernode.crm.workbench.entity.Activity">
+
+        SELECT
+            r.id AS id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.NAME AS owner
+        FROM
+            tbl_activity a
+            JOIN tbl_user u ON a.owner = u.id
+            JOIN tbl_clue_activity_relation r ON a.id = r.activityId
+        WHERE
+            r.clueId = #{clueId}
+
+    </select>
+
+    <select id="getActivityListByName" resultType="com.bjpowernode.crm.workbench.entity.Activity">
+
+        SELECT
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        FROM
+            tbl_activity a
+                JOIN tbl_user u ON a.owner = u.id
+        where a.name like '%' #{activityName} '%' and a.id not in(
+
+            SELECT
+                activityId
+            FROM
+                tbl_clue_activity_relation
+            WHERE
+                clueId = #{clueId}
+            )
+
+    </select>
+
 
 </mapper>
 
