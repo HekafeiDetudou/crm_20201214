@@ -177,10 +177,20 @@
               **去后台获取数据的时候，根据名字，进行模糊查询，取出所有相关的市场活动信息，但是要取出掉 和当前线索已经关联的市场活动      √（完成）
               2020-12-17 22：15：26
 
+        线索转换：
+            --点击转换按钮，将线索（潜在客户）转换成真正的客户
+                即将线索中的 联系人转换为--》联系人
+                           公 司转换为--》客户
+                线索少一条，客户多一条，联系人多一条
 
+            el表达式中
+                ${pageContext.request.contextPath}
+                el表达式中没有request，无法直接使用，要想使用只能通过他的pageContext去拿到request
 
-
-
+            在Java代码中不需要使用pageContext去取得request，因为Java代码中有request对象
+                <%
+                    request.contextPath
+                %>
 
 
 

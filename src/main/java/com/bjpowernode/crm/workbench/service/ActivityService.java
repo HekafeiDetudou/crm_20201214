@@ -36,4 +36,6 @@ public interface ActivityService {
     List<Activity> getActivityListByName(Map<String, Object> map);
 
 
+    List<Activity> getActivityListByNameJust(String activityName);
+
 }

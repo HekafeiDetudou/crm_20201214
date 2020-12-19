@@ -66,10 +66,29 @@ public class ClueControllerServlet extends HttpServlet {
 
             bound(req, resp);
 
+        } else if ("/workbench/clue/getActivityListByNameJust.do".equals(path)) {
+
+            getActivityListByNameJust(req, resp);
+
         }
 
     }
 
+    private void getActivityListByNameJust(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("查询市场活动列表（根据名称模糊查询）");
+
+        String activityName = req.getParameter("activityName");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        List<Activity> activityList = as.getActivityListByNameJust(activityName);
+
+        PrintJson.printJsonObj(resp,activityList);
+
+    }
+
+    //进入到关联线索的市场活动操作
     private void bound(HttpServletRequest req, HttpServletResponse resp) {
 
         System.out.println("进入到关联线索的市场活动操作");

@@ -190,6 +190,21 @@
 
     </select>
 
+    <select id="getActivityListByNameJust" resultType="com.bjpowernode.crm.workbench.entity.Activity">
+
+        SELECT
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        FROM
+            tbl_activity a
+                JOIN tbl_user u ON a.owner = u.id
+        where a.name like '%' #{activityName} '%'
+
+    </select>
+
 
 </mapper>
 
