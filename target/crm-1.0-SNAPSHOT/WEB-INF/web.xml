@@ -97,6 +97,8 @@
         <url-pattern>/workbench/clue/unbound.do</url-pattern>
         <url-pattern>/workbench/clue/getActivityListByName.do</url-pattern>
         <url-pattern>/workbench/clue/bound.do</url-pattern>
+        <url-pattern>/workbench/clue/getActivityListByNameJust.do</url-pattern>
+        <url-pattern>/workbench/clue/convert.do</url-pattern>
 
     </servlet-mapping>
 

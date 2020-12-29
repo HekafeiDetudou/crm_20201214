@@ -2,9 +2,11 @@ package com.bjpowernode.settings.test;
 
 import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.MD5Util;
+import com.bjpowernode.crm.workbench.entity.ClueRemark;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 public class MyTest01 {
 
@@ -28,6 +30,15 @@ public class MyTest01 {
 
         int[] a = {1,2,3,4,5};
         for (int b : a){
+            System.out.println(b);
+        }
+    }
+
+    @Test
+    public void test03(){
+
+        List<ClueRemark> clueRemarkList = null;
+        for (ClueRemark b : clueRemarkList){
             System.out.println(b);
         }
     }
