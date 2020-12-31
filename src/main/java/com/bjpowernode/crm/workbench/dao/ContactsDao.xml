@@ -16,7 +16,7 @@
             email,
             mphone,
             job,
-            birth
+            birth,
             createBy,
             createTime,
             description,
@@ -43,6 +43,10 @@
             #{address}
         )
     </insert>
+
+    <select id="getActivityListByNameJust" resultType="com.bjpowernode.crm.workbench.entity.Contacts">
+        select * from tbl_contacts where fullname like '%' #{fullname} '%'
+    </select>
 
 </mapper>
 

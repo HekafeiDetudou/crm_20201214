@@ -19,4 +19,6 @@ public interface ClueDao {
 
     Clue getById(String clueId);
 
+    int delete(String clueId);
+
 }

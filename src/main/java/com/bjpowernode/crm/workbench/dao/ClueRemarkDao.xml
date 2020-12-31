@@ -8,7 +8,11 @@
     <select id="getListByClueId" resultType="com.bjpowernode.crm.workbench.entity.ClueRemark">
         select * from tbl_clue_remark where clueId=#{clueId}
     </select>
-  	
+
+    <delete id="delete">
+        delete from tbl_clue_remark where id=#{id}
+    </delete>
+
 </mapper>
 
 

@@ -27,6 +27,10 @@
 
     </select>
 
+    <delete id="delete">
+        delete from tbl_clue_activity_relation where id=#{id}
+    </delete>
+
 </mapper>
 
 

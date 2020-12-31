@@ -34,14 +34,7 @@ public class MyTest01 {
         }
     }
 
-    @Test
-    public void test03(){
 
-        List<ClueRemark> clueRemarkList = null;
-        for (ClueRemark b : clueRemarkList){
-            System.out.println(b);
-        }
-    }
 
 
 }

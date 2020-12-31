@@ -21,8 +21,6 @@
             contactsId,
             createBy,
             createTime,
-            editBy,
-            editTime,
             description,
             contactSummary,
             nextContactTime
@@ -42,8 +40,6 @@
                    #{contactsId},
                    #{createBy},
                    #{createTime},
-                   #{editBy},
-                   #{editTime},
                    #{description},
                    #{contactSummary},
                    #{nextContactTime}

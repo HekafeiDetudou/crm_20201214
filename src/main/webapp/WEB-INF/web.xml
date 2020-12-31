@@ -99,7 +99,19 @@
         <url-pattern>/workbench/clue/bound.do</url-pattern>
         <url-pattern>/workbench/clue/getActivityListByNameJust.do</url-pattern>
         <url-pattern>/workbench/clue/convert.do</url-pattern>
+    </servlet-mapping>
 
+
+
+    <!--交易控制器-->
+    <servlet>
+        <servlet-name>TranControllerServlet</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.TranControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TranControllerServlet</servlet-name>
+        <url-pattern>/workbench/transaction/add.do</url-pattern>
+        <url-pattern>/workbench/transaction/getContactListByName.do</url-pattern>
     </servlet-mapping>
 
 
