@@ -46,7 +46,115 @@
                )
 
     </insert>
-  	
+
+    <select id="getTotalByCondition" parameterType="java.util.Map" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        tbl_tran t
+        JOIN tbl_customer c ON t.customerId = c.id
+        join tbl_user u on t.owner = u.id
+        JOIN tbl_contacts con ON con.id = t.contactsId
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="name!=null and name!=''">
+                and t.name like '%' #{name} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and c.name like '%' #{customerName} '%'
+            </if>
+            <if test="stage!=null and stage!=''">
+                and t.stage like '%' #{stage} '%'
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type like '%' #{type} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and t.source like '%' #{source} '%'
+            </if>
+            <if test="contactsName!=null and contactsName!=''">
+                and con.fullname like '%' #{contactsName} '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="getTranByCondition" parameterType="java.util.Map" resultType="com.bjpowernode.crm.workbench.entity.Tran">
+        SELECT
+            t.id,
+            t.name,
+            c.name AS customerId,
+            t.stage,
+            t.type,
+            u.name as owner,
+            t.source,
+            con.fullname as contactsId
+        FROM
+            tbl_tran t
+            JOIN tbl_customer c ON t.customerId = c.id
+            join tbl_user u on t.owner = u.id
+            JOIN tbl_contacts con ON con.id = t.contactsId
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="name!=null and name!=''">
+                and t.name like '%' #{name} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and c.name like '%' #{customerName} '%'
+            </if>
+            <if test="stage!=null and stage!=''">
+                and t.stage like '%' #{stage} '%'
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type like '%' #{type} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and t.source like '%' #{source} '%'
+            </if>
+            <if test="contactsName!=null and contactsName!=''">
+                and con.fullname like '%' #{contactsName} '%'
+            </if>
+        </where>
+
+        ORDER BY t.createTime desc
+
+        limit #{skipCount},#{pageSize}
+    </select>
+
+    <select id="getTranById" resultType="com.bjpowernode.crm.workbench.entity.Tran">
+
+        SELECT
+            t.id,
+            t.money,
+            t.name,
+            t.expectedDate,
+            c.name AS customerId,
+            t.stage,
+            t.type,
+            u.name as owner,
+            t.source,
+            a.name as activityId,
+            con.fullname as contactsId,
+            t.createBy,
+            t.createTime,
+            t.editBy,
+            t.editTime,
+            t.description,
+            t.contactSummary,
+            t.nextContactTime
+        FROM
+            tbl_tran t
+            LEFT JOIN tbl_customer c ON t.customerId = c.id
+            JOIN tbl_user u on t.owner = u.id
+            LEFT JOIN tbl_contacts con ON con.id = t.contactsId
+            LEFT JOIN tbl_activity a on a.id = t.activityId
+        WHERE t.id=#{id}
+
+    </select>
+
 </mapper>
 
 

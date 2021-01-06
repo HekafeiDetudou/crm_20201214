@@ -2,13 +2,18 @@ package com.bjpowernode.crm.workbench.service.impl;
 
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.utils.UUIDUtil;
+import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.dao.CustomerDao;
 import com.bjpowernode.crm.workbench.dao.TranDao;
 import com.bjpowernode.crm.workbench.dao.TranHistoryDao;
+import com.bjpowernode.crm.workbench.entity.Activity;
 import com.bjpowernode.crm.workbench.entity.Customer;
 import com.bjpowernode.crm.workbench.entity.Tran;
 import com.bjpowernode.crm.workbench.entity.TranHistory;
 import com.bjpowernode.crm.workbench.service.TranService;
+
+import java.util.List;
+import java.util.Map;
 
 public class TranServiceImpl implements TranService {
 
@@ -40,7 +45,7 @@ public class TranServiceImpl implements TranService {
             customer = new Customer();
             customer.setId(UUIDUtil.getUUID());
             customer.setOwner(tran.getOwner());
-            customer.setName(tran.getName());
+            customer.setName(customerName);
             customer.setCreateBy(tran.getCreateBy());
             customer.setCreateTime(tran.getCreateTime());
             customer.setContactSummary(tran.getContactSummary());
@@ -80,6 +85,35 @@ public class TranServiceImpl implements TranService {
         }
 
         return flag;
+
+    }
+
+    @Override
+    public PaginationVO<Tran> pageList(Map<String, Object> map) {
+        //System.out.println("map集合中的数据"+map.get("name"));
+        //取得total
+        int total = tranDao.getTotalByCondition(map);
+        //System.out.println(total);
+        //取得dataList
+        List<Tran> dataList = tranDao.getTranByCondition(map);
+
+        //创建一个vo对象，将vo和dataList封装到vo中
+        PaginationVO<Tran> vo = new PaginationVO<>();
+        vo.setTotal(total);
+        vo.setDataList(dataList);
+
+        //将vo返回
+        return vo;
+    }
+
+    @Override
+    public Tran detail(String id) {
+
+        //取得id对应的Tran对象
+        Tran tran = tranDao.getTranById(id);
+
+        //返回tran
+        return tran;
 
     }
 }

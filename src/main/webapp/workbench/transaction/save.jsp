@@ -413,7 +413,7 @@
     <div class="form-group">
         <label for="create-clueSource" class="col-sm-2 control-label">来源</label>
         <div class="col-sm-10" style="width: 300px;">
-            <select class="form-control" id="create-clueSource">
+            <select class="form-control" id="create-clueSource" name="source">
                 <option></option>
                 <c:forEach items="${source}" var="sc">
                     <option value="${sc.value}">${sc.text}</option>
@@ -454,7 +454,7 @@
         </label>
         <div class="col-sm-10" style="width: 300px;">
             <input type="text" class="form-control" id="contactsName" placeholder="点击左侧放大镜搜索">
-            <input type="hidden" id="contactsId" name="contactId">
+            <input type="hidden" id="contactsId" name="contactsId">
         </div>
     </div>
 
