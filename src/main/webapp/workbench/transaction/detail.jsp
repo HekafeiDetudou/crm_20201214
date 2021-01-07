@@ -1,6 +1,12 @@
+<%@ page import="java.util.List" %>
+<%@ page import="com.bjpowernode.crm.settings.entity.DicValue" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+    //准备字典类型为stage的字典值列表
+    List<DicValue> dicValueList = (List<DicValue>) application.getAttribute("stage");
+
 %>
 <!DOCTYPE html>
 <html>
@@ -87,7 +93,49 @@
                     }
                 }, 100);
             });
+
+            //页面加载完毕后，展现交易历史列表
+            showHistoryList();
+
         });
+
+        //声明展示交易历史函数
+        function showHistoryList(){
+
+            $.ajax({
+                url:"workbench/transaction/getHistoryListByTranId.do",
+                data : {
+                    "id" : "${t.id}"
+                },
+                type:"get",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                    * data
+                    *   [{交易历史1},{交易历史2},{交易历史3}...]
+                    * */
+
+                    var html = "";
+                    $.each(data,function (i,n){
+
+                        html += '<tr>';
+                        html += '<td>'+n.stage+'</td>';
+                        html += '<td>'+n.money+'</td>';
+                        /*html += '<td>20</td>';*/
+                        html += '<td>'+n.expectedDate+'</td>';
+                        html += '<td>'+n.createTime+'</td>';
+                        html += '<td>'+n.createBy+'</td>';
+                        html += '</tr>';
+
+                    })
+
+                    $("#tranHistoryBody").html(html);
+
+                }
+            })
+
+        }
 
 
 
@@ -106,14 +154,14 @@
     <div class="page-header">
         <h3>${t.name} <small>￥${t.money}</small></h3>
     </div>
-    <div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
+    <div style="position: relative; height: 10px; width: 250px;  top: -72px; left: 700px;">
         <button type="button" class="btn btn-default" onclick="window.location.href='edit.html';"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
         <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
     </div>
 </div>
 
 <!-- 阶段状态 -->
-<div style="position: relative; left: 40px; top: -50px;">
+<%--<div style="position: relative; left: 40px; top: -50px;">
     阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
     -----------
@@ -134,7 +182,7 @@
     <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
     -----------
     <span class="closingDate">2010-10-10</span>
-</div>
+</div>--%>
 
 <!-- 详细信息 -->
 <div style="position: relative; top: 0px;">
@@ -276,14 +324,14 @@
                 <tr style="color: #B3B3B3;">
                     <td>阶段</td>
                     <td>金额</td>
-                    <td>可能性</td>
+                    <%--<td>可能性</td>--%>
                     <td>预计成交日期</td>
                     <td>创建时间</td>
                     <td>创建人</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
+                <tbody id="tranHistoryBody">
+                <%--<tr>
                     <td>资质审查</td>
                     <td>5,000</td>
                     <td>10</td>
@@ -306,7 +354,7 @@
                     <td>2017-02-07</td>
                     <td>2017-02-09 10:10:10</td>
                     <td>zhangsan</td>
-                </tr>
+                </tr>--%>
                 </tbody>
             </table>
         </div>

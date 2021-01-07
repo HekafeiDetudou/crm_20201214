@@ -155,6 +155,23 @@
 
     </select>
 
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_tran
+    </select>
+
+    <select id="getCharts" resultType="map">
+
+        SELECT
+            COUNT(*) as value,
+            stage as name
+
+        FROM
+            tbl_tran
+        GROUP BY
+            stage
+
+    </select>
+
 </mapper>
 
 

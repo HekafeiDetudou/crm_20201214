@@ -6,12 +6,12 @@ import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.dao.CustomerDao;
 import com.bjpowernode.crm.workbench.dao.TranDao;
 import com.bjpowernode.crm.workbench.dao.TranHistoryDao;
-import com.bjpowernode.crm.workbench.entity.Activity;
 import com.bjpowernode.crm.workbench.entity.Customer;
 import com.bjpowernode.crm.workbench.entity.Tran;
 import com.bjpowernode.crm.workbench.entity.TranHistory;
 import com.bjpowernode.crm.workbench.service.TranService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +114,36 @@ public class TranServiceImpl implements TranService {
 
         //返回tran
         return tran;
+
+    }
+
+    @Override
+    public List<TranHistory> getHistoryListByTranId(String id) {
+
+        //取得tranid对应的交易历史列表
+        List<TranHistory> tranHistoryList = tranHistoryDao.getHistoryListByTranId(id);
+
+        //返回列表
+        return tranHistoryList;
+
+    }
+
+    @Override
+    public Map<String, Object> getCharts() {
+
+        //取得total
+        int total = tranDao.getTotal();
+
+        //取得dataList
+        List<Map<String,Object>> dataList = tranDao.getCharts();
+
+        //将total和dataList保存到map中
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",total);
+        map.put("dataList",dataList);
+
+        //返回map
+        return map;
 
     }
 }

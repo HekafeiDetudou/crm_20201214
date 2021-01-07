@@ -8,10 +8,7 @@ import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVO;
-import com.bjpowernode.crm.workbench.entity.Activity;
-import com.bjpowernode.crm.workbench.entity.Clue;
-import com.bjpowernode.crm.workbench.entity.Contacts;
-import com.bjpowernode.crm.workbench.entity.Tran;
+import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.*;
 import com.bjpowernode.crm.workbench.service.impl.*;
 
@@ -56,7 +53,46 @@ public class TranControllerServlet extends HttpServlet {
 
             detail(request,response);
 
+        }else if ("/workbench/transaction/getHistoryListByTranId.do".equals(path)){
+
+            getHistoryListByTranId(request,response);
+
+        }else if ("/workbench/transaction/getCharts.do".equals(path)){
+
+            getCharts(request,response);
+
         }
+
+    }
+
+    private void getCharts(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到获取ECharts数据操作");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        /*
+        * 业务层为我们返回
+        *       total
+        *       dataList
+        * */
+        Map<String,Object> map = tranService.getCharts();
+
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+    private void getHistoryListByTranId(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取交易历史记录");
+
+        String id = request.getParameter("id");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        List<TranHistory> tranHistoryList = tranService.getHistoryListByTranId(id);
+
+        PrintJson.printJsonObj(response,tranHistoryList);
 
     }
 
