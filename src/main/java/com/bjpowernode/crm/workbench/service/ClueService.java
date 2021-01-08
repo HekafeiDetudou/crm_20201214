@@ -23,4 +23,11 @@ public interface ClueService {
 
     boolean convert(String clueId, Tran t, String createBy);
 
+    Map<String, Object> getUserListAndClue(String id);
+
+    boolean updateClue(Clue clue);
+
+    boolean delete(String[] ids);
+
+
 }

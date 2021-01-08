@@ -1,5 +1,7 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
+import com.bjpowernode.crm.settings.dao.UserDao;
+import com.bjpowernode.crm.settings.entity.User;
 import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.utils.UUIDUtil;
@@ -9,6 +11,7 @@ import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import org.apache.log4j.varia.FallbackErrorHandler;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +20,9 @@ public class ClueServiceImpl implements ClueService {
     private ClueDao clueDao = SqlSessionUtil.getSqlSession().getMapper(ClueDao.class);
     private ClueActivityRelationDao clueActivityRelationDao = SqlSessionUtil.getSqlSession().getMapper(ClueActivityRelationDao.class);
     private ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+
+    //用户
+    private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
     //客户
     private CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
@@ -319,4 +325,70 @@ public class ClueServiceImpl implements ClueService {
 
     }
 
+    @Override
+    public Map<String, Object> getUserListAndClue(String id) {
+
+        //取得用户信息列表
+        List<User> userList = userDao.getUserList();
+
+        //取得单条线索记录
+        Clue clue = clueDao.getClueById2(id);
+
+        //将用户信息列表和线索记录，全部放到map中
+        Map<String,Object> map = new HashMap<>();
+        map.put("uList",userList);
+        map.put("c",clue);
+
+        //返回map
+        return map;
+
+    }
+
+    @Override
+    public boolean updateClue(Clue clue) {
+
+        boolean flag = true;
+        int count = clueDao.updateClue(clue);
+        if (count != 1){
+            //添加失败
+            flag = false;
+        }
+        return flag;
+
+    }
+
+    @Override
+    public boolean delete(String[] ids) {
+
+        boolean flag = true;
+
+        //查询出需要删除的备注的数量
+        int count = clueRemarkDao.getCountByAids(ids);
+
+        //删除关联该市场活动的备注信息，返回受影响的条数（实际删除的条数）
+        int effectCount = clueRemarkDao.delete2(ids);
+        if (count != effectCount){
+            flag = false;
+        }
+
+        //查询出需要删除的线索和市场活动关系的记录数量
+        int count2 = clueActivityRelationDao.getCountByAids(ids);
+
+        //删除线索和市场活动关系的记录
+        int effectCount2 = clueActivityRelationDao.delete2(ids);
+        if (count2 != effectCount2){
+            flag = false;
+        }
+
+        //删除该条市场活动的信息
+        int count3 = clueDao.delete2(ids);
+        if (count3 != ids.length){
+            flag = false;
+        }
+
+        return flag;
+
+    }
+
 }
+

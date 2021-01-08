@@ -75,7 +75,113 @@ public class ClueControllerServlet extends HttpServlet {
 
             convert(req, resp);
 
+        }else if ("/workbench/clue/getUserListAndClue.do".equals(path)) {
+
+            getUserListAndClue(req, resp);
+
+        }else if ("/workbench/clue/updateClue.do".equals(path)) {
+
+            updateClue(req, resp);
+
+        }else if ("/workbench/clue/delete.do".equals(path)) {
+
+            delete(req, resp);
+
         }
+
+    }
+
+    private void delete(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("执行线索的删除操作");
+
+        //接收id数组（param）  http://8080....id=dsdshdishdisdhs&id=diushdishdissdsd23
+        String[] ids = req.getParameterValues("id");
+
+        ClueService cs = (ClueService)ServiceFactory.getService(new ClueServiceImpl());
+
+
+        boolean flag = cs.delete(ids);
+
+        PrintJson.printJsonFlag(resp,flag);
+
+    }
+
+    //执行线索的修改操作
+    private void updateClue(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("执行线索的修改操作");
+
+        //获取到前端传过来的数据
+        String id = req.getParameter("id");
+        String fullname = req.getParameter("fullname");
+        String appellation = req.getParameter("appellation");
+        String owner = req.getParameter("owner");
+        String company = req.getParameter("company");
+        String job = req.getParameter("job");
+        String email = req.getParameter("email");
+        String phone = req.getParameter("phone");
+        String website = req.getParameter("website");
+        String mphone = req.getParameter("mphone");
+        String state = req.getParameter("state");
+        String source = req.getParameter("source");
+        String description = req.getParameter("description");
+        String contactSummary = req.getParameter("contactSummary");
+        String nextContactTime = req.getParameter("nextContactTime");
+        String address = req.getParameter("address");
+
+        //修改时间:当前系统时间
+        String editTime = DateTimeUtil.getSysTime();
+        //修改人：当前登录用户
+        String editBy = ((User)req.getSession().getAttribute("user")).getName();
+
+        Clue clue = new Clue();
+        clue.setId(id);
+        clue.setFullname(fullname);
+        clue.setAppellation(appellation);
+        clue.setOwner(owner);
+        clue.setCompany(company);
+        clue.setJob(job);
+        clue.setEmail(email);
+        clue.setPhone(phone);
+        clue.setWebsite(website);
+        clue.setMphone(mphone);
+        clue.setState(state);
+        clue.setSource(source);
+        clue.setEditBy(editBy);
+        clue.setEditTime(editTime);
+        clue.setDescription(description);
+        clue.setContactSummary(contactSummary);
+        clue.setNextContactTime(nextContactTime);
+        clue.setAddress(address);
+
+
+
+        //调用service执行更新操作，返回值为boolean类型
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = clueService.updateClue(clue);
+
+        //将数据转换成json格式
+        PrintJson.printJsonFlag(resp,flag);
+
+    }
+
+    //获取用户信息列表和根据线索id查询1条线索记录
+    private void getUserListAndClue(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("获取用户信息列表和根据线索id查询1条线索记录");
+
+        String id = req.getParameter("id");
+
+        /*ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        Map<String,Object> map = as.getUserListAndActivity(id);*/
+
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImpl());
+
+        Map<String,Object> map = clueService.getUserListAndClue(id);
+
+        PrintJson.printJsonObj(resp,map);
 
     }
 

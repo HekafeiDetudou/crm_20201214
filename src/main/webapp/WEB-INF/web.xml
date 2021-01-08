@@ -99,6 +99,9 @@
         <url-pattern>/workbench/clue/bound.do</url-pattern>
         <url-pattern>/workbench/clue/getActivityListByNameJust.do</url-pattern>
         <url-pattern>/workbench/clue/convert.do</url-pattern>
+        <url-pattern>/workbench/clue/getUserListAndClue.do</url-pattern>
+        <url-pattern>/workbench/clue/updateClue.do</url-pattern>
+        <url-pattern>/workbench/clue/delete.do</url-pattern>
     </servlet-mapping>
 
 
