@@ -99,6 +99,44 @@
         <url-pattern>/workbench/clue/bound.do</url-pattern>
         <url-pattern>/workbench/clue/getActivityListByNameJust.do</url-pattern>
         <url-pattern>/workbench/clue/convert.do</url-pattern>
+        <url-pattern>/workbench/clue/getUserListAndClue.do</url-pattern>
+        <url-pattern>/workbench/clue/updateClue.do</url-pattern>
+        <url-pattern>/workbench/clue/delete.do</url-pattern>
+        <url-pattern>/workbench/clue/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/clue/getRemarkListByClueId.do</url-pattern>
+        <url-pattern>/workbench/clue/deleteRemark.do</url-pattern>
+        <url-pattern>/workbench/clue/updateRemark.do</url-pattern>
+    </servlet-mapping>
+
+
+
+    <!--客户控制器-->
+    <servlet>
+        <servlet-name>CustomerControllerServlet</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.CustomerControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerControllerServlet</servlet-name>
+        <url-pattern>/workbench/customer/getUserList.do</url-pattern>
+        <url-pattern>/workbench/customer/save.do</url-pattern>
+        <url-pattern>/workbench/customer/pageList.do</url-pattern>
+        <url-pattern>/workbench/customer/detail.do</url-pattern>
+        <url-pattern>/workbench/customer/delete.do</url-pattern>
+        <url-pattern>/workbench/customer/getUserListAndCustomer.do</url-pattern>
+        <url-pattern>/workbench/customer/updateCustomer.do</url-pattern>
+    </servlet-mapping>
+
+
+
+
+    <!--联系人控制器-->
+    <servlet>
+        <servlet-name>ContactsControllerServlet</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ContactsControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContactsControllerServlet</servlet-name>
+        <url-pattern>/workbench/contacts/xxx.do</url-pattern>
     </servlet-mapping>
 
 

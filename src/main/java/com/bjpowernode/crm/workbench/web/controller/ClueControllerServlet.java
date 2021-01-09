@@ -8,10 +8,7 @@ import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVO;
-import com.bjpowernode.crm.workbench.entity.Activity;
-import com.bjpowernode.crm.workbench.entity.ActivityRemark;
-import com.bjpowernode.crm.workbench.entity.Clue;
-import com.bjpowernode.crm.workbench.entity.Tran;
+import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
@@ -87,10 +84,118 @@ public class ClueControllerServlet extends HttpServlet {
 
             delete(req, resp);
 
+        }else if ("/workbench/clue/saveRemark.do".equals(path)) {
+
+            saveRemark(req, resp);
+
+        }else if ("/workbench/clue/getRemarkListByClueId.do".equals(path)) {
+
+            getRemarkListByClueId(req, resp);
+
+        }else if ("/workbench/clue/deleteRemark.do".equals(path)) {
+
+            deleteRemark(req, resp);
+
+        }else if ("/workbench/clue/updateRemark.do".equals(path)) {
+
+            updateRemark(req, resp);
+
         }
 
     }
 
+    //进入到备注的修改操作
+    private void updateRemark(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("进入到备注的修改操作");
+
+        String noteContent = req.getParameter("noteContent");
+        String id = req.getParameter("id");
+        String editTime = DateTimeUtil.getSysTime();
+        String editBy = ((User)req.getSession().getAttribute("user")).getName();
+        String editFlag = "1";
+
+        ClueRemark cr = new ClueRemark();
+        cr.setNoteContent(noteContent);
+        cr.setId(id);
+        cr.setEditFlag(editFlag);
+        cr.setEditBy(editBy);
+        cr.setEditTime(editTime);
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = cs.updateReamrk(cr);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("cr1",cr);
+
+        PrintJson.printJsonObj(resp,map);
+
+    }
+
+    //执行备注的删除操作
+    private void deleteRemark(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("执行备注的删除操作");
+
+        String id = req.getParameter("id");
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        boolean flag = cs.deleteRemark(id);
+
+        PrintJson.printJsonFlag(resp,flag);
+
+    }
+
+    //根据线索的id取得备注信息列表
+    private void getRemarkListByClueId(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("根据线索的id取得备注信息列表");
+
+        String clueId = req.getParameter("clueId");
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+
+        List<ClueRemark> crList = cs.getRemarkListByClueId(clueId);
+
+        PrintJson.printJsonObj(resp,crList);
+
+    }
+
+
+    //进入到保存备注信息操作
+    private void saveRemark(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("进入到保存备注信息操作");
+
+        String noteContent = req.getParameter("noteContent");
+        String clueId = req.getParameter("clueId");
+        String id = UUIDUtil.getUUID();
+        String createTime = DateTimeUtil.getSysTime();
+        String createBy = ((User)req.getSession().getAttribute("user")).getName();
+        String editFlag = "0";
+
+        ClueRemark clueRemark = new ClueRemark();
+        clueRemark.setClueId(clueId);
+        clueRemark.setCreateBy(createBy);
+        clueRemark.setCreateTime(createTime);
+        clueRemark.setEditFlag(editFlag);
+        clueRemark.setId(id);
+        clueRemark.setNoteContent(noteContent);
+
+        ClueService cs = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = cs.saveReamrk(clueRemark);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("clueRemark",clueRemark);
+
+        PrintJson.printJsonObj(resp,map);
+
+    }
+
+    //执行线索的删除操作
     private void delete(HttpServletRequest req, HttpServletResponse resp) {
 
         System.out.println("执行线索的删除操作");

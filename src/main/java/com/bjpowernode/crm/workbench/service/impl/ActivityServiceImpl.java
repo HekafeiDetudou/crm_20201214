@@ -36,7 +36,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public PaginationVO<Activity> pageList(Map<String,Object> map) {
 
-        System.out.println("map集合中的数据"+map.get("name"));
+        //System.out.println("map集合中的数据"+map.get("name"));
         //取得total
         int total = activityDao.getTotalByCondition(map);
 

@@ -512,6 +512,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="create-fullname" class="col-sm-2 control-label">姓名<span
+                                style="font-size: 15px; color: red;">*</span></label>
+                        <div class="col-sm-10" style="width: 300px;">
+                            <input type="text" class="form-control" id="create-fullname">
+                        </div>
                         <label for="create-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-appellation">
@@ -521,11 +526,7 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <label for="create-fullname" class="col-sm-2 control-label">姓名<span
-                                style="font-size: 15px; color: red;">*</span></label>
-                        <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-fullname">
-                        </div>
+
                     </div>
 
                     <div class="form-group">

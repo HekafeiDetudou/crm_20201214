@@ -45,6 +45,48 @@
 
     </delete>
 
+    <insert id="saveRemark">
+        INSERT INTO tbl_clue_remark ( id, noteContent, createTime, createBy, clueId ,editFlag)
+        VALUES
+        (
+            #{id},
+            #{noteContent},
+            #{createTime},
+            #{createBy},
+            #{clueId},
+            #{editFlag}
+        )
+    </insert>
+
+    <select id="getRemarkListByClueId" resultType="com.bjpowernode.crm.workbench.entity.ClueRemark">
+
+        select * from tbl_clue_remark where clueId = #{clueId}
+
+    </select>
+
+    <delete id="deleteById">
+
+        delete
+
+        from tbl_clue_remark
+
+        where id = #{id}
+
+    </delete>
+
+    <update id="updateRemark">
+
+        update tbl_clue_remark
+        set
+            noteContent=#{noteContent},
+            editFlag=#{editFlag},
+            editBy=#{editBy},
+            editTime=#{editTime}
+        where
+            id=#{id}
+
+    </update>
+
 </mapper>
 
 

@@ -103,13 +103,11 @@
 
     </delete>
 
-
     <select id="getActivityById" resultType="com.bjpowernode.crm.workbench.entity.Activity">
 
         select * from tbl_activity where id = #{id}
 
     </select>
-
 
     <update id="updateActivity">
 

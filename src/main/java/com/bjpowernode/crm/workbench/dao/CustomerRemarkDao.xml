@@ -28,6 +28,39 @@
         )
     </insert>
 
+    <select id="getCountByAids" resultType="int">
+
+        select count(*)
+
+        from tbl_customer_remark
+
+        where customerId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </select>
+
+    <delete id="delete">
+
+        delete
+
+        from tbl_customer_remark
+
+        where customerId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </delete>
+
+
 </mapper>
 
 

@@ -9,7 +9,6 @@ import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.dao.*;
 import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.ClueService;
-import org.apache.log4j.varia.FallbackErrorHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -386,6 +385,55 @@ public class ClueServiceImpl implements ClueService {
             flag = false;
         }
 
+        return flag;
+
+    }
+
+    @Override
+    public boolean saveReamrk(ClueRemark clueRemark) {
+
+        boolean flag = false;
+        int count = clueRemarkDao.saveRemark(clueRemark);
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public List<ClueRemark> getRemarkListByClueId(String clueId) {
+
+        List<ClueRemark> crList = clueRemarkDao.getRemarkListByClueId(clueId);
+
+        return crList;
+
+    }
+
+    @Override
+    public boolean deleteRemark(String id) {
+
+        boolean flag = false;
+
+        int count = clueRemarkDao.deleteById(id);
+
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public boolean updateReamrk(ClueRemark cr) {
+
+        boolean flag = false;
+        int count = clueRemarkDao.updateRemark(cr);
+        if (count == 1){
+            flag = true;
+        }
         return flag;
 
     }

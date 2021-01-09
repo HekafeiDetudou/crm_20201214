@@ -94,8 +94,8 @@
                             html += '<div id="'+data.activityRemark.id+'" class="remarkDiv" style="height: 60px;">';
                             html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
                             html += '<div style="position: relative; top: -40px; left: 40px;" >';
-                            html += '<h5id="e'+data.activityRemark.id+'">'+data.activityRemark.noteContent+'</h5>';
-                            html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${a.name}</b> <small style="color: gray;" id="s'+n.id+'"> '+(data.activityRemark.createTime)+' 由'+(data.activityRemark.createBy)+'</small>';
+                            html += '<h5 id="e'+data.activityRemark.id+'" >'+data.activityRemark.noteContent+'</h5>';
+                            html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${a.name}</b> <small style="color: gray;" id="s'+data.activityRemark.id+'" > '+(data.activityRemark.createTime)+' 由'+(data.activityRemark.createBy)+'</small>';
                             html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
                             html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+data.activityRemark.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #2a5caa;"></span></a>';
                             html += '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -119,7 +119,6 @@
 
 
             })
-
 
             //声明模态窗口的更新按钮，点击按钮后，将更改后的备注信息发送至后台，更新数据库信息
             $("#updateRemarkBtn").click(function (){
@@ -267,7 +266,7 @@
 
         }
 
-        //声明修改按钮，点击按钮后执行修改操作
+        //声明备注修改按钮，点击按钮后执行修改操作
         function editRemark(id){
 
             //alert(id);
@@ -286,8 +285,6 @@
 
 
         }
-
-
 
     </script>
 

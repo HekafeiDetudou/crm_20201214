@@ -31,6 +31,38 @@
         delete from tbl_clue_activity_relation where id=#{id}
     </delete>
 
+    <select id="getCountByAids" resultType="int">
+
+        select count(*)
+
+        from tbl_clue_activity_relation
+
+        where clueId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </select>
+
+    <delete id="delete2">
+
+        delete
+
+        from tbl_clue_activity_relation
+
+        where clueId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </delete>
+
 </mapper>
 
 

@@ -27,6 +27,19 @@
 
         $(function(){
 
+            //为全选的复选框绑定事件，触发全选操作
+            $("#checkedAll").click(function (){
+
+                $("input[name=xz]").prop("checked",this.checked)
+
+            })
+            //子选择框，如果全部选中，那么最上面的复选框，也自动勾选
+            $("#tranBody").on("click",$("input[name=xz]"),function (){
+
+                $("#checkedAll").prop("checked",$("input[name=xz]").length == $("input[name=xz]:checked").length);
+
+            })
+
             //页面加载完毕后触发一个方法
             pageList(1,2);
 
@@ -282,7 +295,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr style="color: #B3B3B3;">
-                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" id="checkedAll" /></td>
                     <td>名称</td>
                     <td>客户名称</td>
                     <td>阶段</td>

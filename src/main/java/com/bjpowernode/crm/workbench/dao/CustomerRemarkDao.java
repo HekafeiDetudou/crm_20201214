@@ -6,4 +6,8 @@ public interface CustomerRemarkDao {
 
     int save(CustomerRemark customerRemark);
 
+    int getCountByAids(String[] ids);
+
+    int delete(String[] ids);
+
 }

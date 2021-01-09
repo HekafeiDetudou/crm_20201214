@@ -163,6 +163,214 @@
 
             })
 
+
+            //为修改按钮绑定事件，打开修改操作的模态窗口
+            $("#editBtn").click(function (){
+
+                //引入日期控件
+                $(".time").datetimepicker({
+                    minView: "month",
+                    language:  'zh-CN',
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayBtn: true,
+                    pickerPosition: "bottom-left"
+                });
+
+                var $xz = $("input[name=xz]:checked");
+
+                if ($xz.length == 0){
+
+                    //程序执行到此处，说明用户没有选择需要修改的记录
+                    alert("请先选择需要修改的市场活动");
+
+                }else if ($xz.length > 1){
+
+                    alert("只能选择一个市场活动进行修改，请重新选择");
+
+                }else{
+
+                    //程序执行到此处，说明用户只选择了一条需要修改的数据
+                    var id = $xz.val();
+
+                    //发出Ajax请求
+                    $.ajax({
+                        url:"workbench/clue/getUserListAndClue.do",
+                        data : {
+                            "id" : id
+                        },
+                        type:"get",
+                        dataType:"json",
+                        success : function (data){
+
+                            /*
+                            *   data
+                            *       用户列表
+                            *       线索对象
+                            *
+                            *       {“uList”:[{"user1":user1},{"user2":user2},{"user3":user3}....],"c":Clue}
+                            * */
+                            //处理所有者的下拉框
+                            var html = "<option></option>";
+                            $.each(data.uList,function (i,n){
+                                html += "<option value='"+n.id+"'>"+n.name+"</option>";
+                            })
+                            $("#edit-clueOwner").html(html);
+
+                            //处理单条clue记录
+                            $("#edit-id").val(data.c.id);
+                            $("#edit-clueOwner").val(data.c.owner);
+                            $("#edit-company").val(data.c.company);
+                            $("#edit-appellation").val(data.c.appellation);
+                            $("#edit-fullname").val(data.c.fullname);
+                            $("#edit-job").val(data.c.job);
+                            $("#edit-email").val(data.c.email);
+                            $("#edit-phone").val(data.c.phone);
+                            $("#edit-website").val(data.c.website);
+                            $("#edit-mphone").val(data.c.mphone);
+                            $("#edit-state").val(data.c.state);
+                            $("#edit-source").val(data.c.source);
+                            $("#edit-description").val(data.c.description);
+                            $("#edit-contactSummary").val(data.c.contactSummary);
+                            $("#edit-nextContactTime").val(data.c.nextContactTime);
+                            $("#edit-address").val(data.c.address);
+
+                            //所有下拉框处理完毕后，展现模态窗口
+                            $("#editClueModal").modal("show");
+
+                        }
+                    })
+
+                }
+
+            })
+
+
+            //为修改操做模态窗口中的更新按钮绑定事件，点击执行更新市操作
+            $("#edit-updateBtn").click(function (){
+
+                //alert("123");
+
+                $.ajax({
+                    url:"workbench/clue/updateClue.do",
+                    data : {
+                        "id" : $.trim($("#edit-id").val()),
+                        "fullname" : $.trim($("#edit-fullname").val()),
+                        "appellation" : $.trim($("#edit-appellation").val()),
+                        "owner" : $.trim($("#edit-clueOwner").val()),
+                        "company" : $.trim($("#edit-company").val()),
+                        "job" : $.trim($("#edit-job").val()),
+                        "email" : $.trim($("#edit-email").val()),
+                        "phone" : $.trim($("#edit-phone").val()),
+                        "website" : $.trim($("#edit-website").val()),
+                        "mphone" : $.trim($("#edit-mphone").val()),
+                        "state" : $.trim($("#edit-state").val()),
+                        "source" : $.trim($("#edit-source").val()),
+                        "description" : $.trim($("#edit-description").val()),
+                        "contactSummary" : $.trim($("#edit-contactSummary").val()),
+                        "nextContactTime" : $.trim($("#edit-nextContactTime").val()),
+                        "address" : $.trim($("#edit-address").val())
+
+
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success : function (data){
+
+                        if (data.success){
+
+                            //修改成功
+                            //刷新市场活动信息列表（局部刷新）
+                            //pageList(1,2);
+                            //修改操作后应该维持在当前页，维持每页显示的记录数
+                            pageList($("#cluePage").bs_pagination('getOption', 'currentPage')
+                                ,$("#cluePage").bs_pagination('getOption', 'rowsPerPage'));
+
+                            //清空模态窗口中的数据
+                            //$("#editActivityForm")[0].reset();
+
+                            //关闭添加操作的模态窗口
+                            $("#editClueModal").modal("hide");
+
+                        }else{
+
+                            alert("修改市场活动失败");
+
+                        }
+
+                    }
+                })
+
+            })
+
+            //为删除按钮绑定事件，执行市场活动的删除操作
+            $("#deleteBtn").click(function (){
+
+                //找到复选框中所有选中的jQuery对象
+                var $xz = $("input[name=xz]:checked");
+
+                if ($xz.length == 0){
+
+                    //用户没有选择需要删除的记录
+                    alert("请选择需要删除的记录");
+
+                }else {
+
+                    //程序执行到此处，说明用户选择了记录，但是有可能是1条，也可能是多条
+                    //alert("123");
+
+                    if (confirm("确定要删除所选中的数据吗？删除后不可恢复！")){
+
+                        //拼接参数
+                        var param = "";
+
+                        //将$xz中的每一个dom对象遍历出来，取其value值，就相当于取得了需要删除的记录id
+                        for (var i=0; i<$xz.length; i++){
+
+                            param += "id=" + $($xz[i]).val();
+                            //如果不是最后一个元素，则需要追加&
+                            if (i<$xz.length - 1){
+                                param += "&";
+                            }
+                        }
+
+                        //alert(param);
+                        //使用ajax发送请求，使后台执行删除操作
+                        $.ajax({
+                            url:"workbench/clue/delete.do",
+                            data : param,
+                            type:"post",
+                            dataType:"json",
+                            success : function (data){
+                                /*
+                                *
+                                * data
+                                *       {"success":true/false}
+                                * */
+                                if (data.success){
+                                    //删除成功
+                                    //对页面数据进行局部刷新
+                                    //pageList(1,2);
+                                    //删除成功后，回到第一页，维持每页展现的记录数
+                                    pageList(1,$("#cluePage").bs_pagination('getOption', 'rowsPerPage'));
+
+
+                                }else {
+
+                                    //删除失败
+                                    alert("删除市场活动失败");
+
+                                }
+                            }
+                        })
+                    }
+
+
+
+                }
+
+            })
+
         });
 
         //分页查询
@@ -304,6 +512,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="create-fullname" class="col-sm-2 control-label">姓名<span
+                                style="font-size: 15px; color: red;">*</span></label>
+                        <div class="col-sm-10" style="width: 300px;">
+                            <input type="text" class="form-control" id="create-fullname">
+                        </div>
                         <label for="create-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-appellation">
@@ -313,11 +526,7 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <label for="create-fullname" class="col-sm-2 control-label">姓名<span
-                                style="font-size: 15px; color: red;">*</span></label>
-                        <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-fullname">
-                        </div>
+
                     </div>
 
                     <div class="form-group">
@@ -429,73 +638,73 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
 
+                    <%--隐藏域保存该条记录的id--%>
+                    <input type="hidden" id="edit-id" />
+
                     <div class="form-group">
                         <label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-clueOwner">
-                                <option>zhangsan</option>
+                                <%--<option>zhangsan</option>
                                 <option>lisi</option>
-                                <option>wangwu</option>
+                                <option>wangwu</option>--%>
                             </select>
                         </div>
                         <label for="edit-company" class="col-sm-2 control-label">公司<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-company" value="动力节点">
+                            <input type="text" class="form-control" id="edit-company">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-call" class="col-sm-2 control-label">称呼</label>
+                        <label for="edit-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-call">
+                            <select class="form-control" id="edit-appellation">
                                 <option></option>
-                                <option selected>先生</option>
-                                <option>夫人</option>
-                                <option>女士</option>
-                                <option>博士</option>
-                                <option>教授</option>
+                                <c:forEach items="${appellation}" var="a">
+                                    <option value="${a.value}" >${a.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
-                        <label for="edit-surname" class="col-sm-2 control-label">姓名<span
+                        <label for="edit-fullname" class="col-sm-2 control-label">姓名<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-surname" value="李四">
+                            <input type="text" class="form-control" id="edit-fullname">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-job" class="col-sm-2 control-label">职位</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-job" value="CTO">
+                            <input type="text" class="form-control" id="edit-job">
                         </div>
                         <label for="edit-email" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-email">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-phone" value="010-84846003">
+                            <input type="text" class="form-control" id="edit-phone">
                         </div>
                         <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-website"
-                                   value="http://www.bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-website">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-mphone" class="col-sm-2 control-label">手机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-mphone" value="12345678901">
+                            <input type="text" class="form-control" id="edit-mphone">
                         </div>
-                        <label for="edit-status" class="col-sm-2 control-label">线索状态</label>
+                        <label for="edit-state" class="col-sm-2 control-label">线索状态</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-status">
+                            <select class="form-control" id="edit-state">
                                 <option></option>
                                 <c:forEach items="${clueState}" var="clueState">
                                     <option value="${clueState.value}" >${clueState.text}</option>
@@ -517,9 +726,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">描述</label>
+                        <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
+                            <textarea class="form-control" rows="3" id="edit-description"></textarea>
                         </div>
                     </div>
 
@@ -529,13 +738,13 @@
                         <div class="form-group">
                             <label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-contactSummary">这个线索即将被转换</textarea>
+                                <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
+                                <input type="text" class="form-control time" id="edit-nextContactTime">
                             </div>
                         </div>
                     </div>
@@ -546,7 +755,7 @@
                         <div class="form-group">
                             <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="edit-address">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="edit-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -555,7 +764,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary" id="edit-updateBtn">更新</button>
             </div>
         </div>
     </div>
@@ -646,13 +855,19 @@
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-primary" id="addBtn" ><span
-                        class="glyphicon glyphicon-plus"></span> 创建
+
+                <button type="button" class="btn btn-primary" id="addBtn" >
+                    <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span
-                        class="glyphicon glyphicon-pencil"></span> 修改
+
+                <button type="button" class="btn btn-default" id="editBtn" >
+                    <span class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+
+                <button type="button" class="btn btn-danger" id="deleteBtn" >
+                    <span class="glyphicon glyphicon-minus"></span> 删除
+                </button>
+
             </div>
 
 

@@ -142,7 +142,7 @@
             c.id,
             c.fullname,
             c.appellation,
-            u.NAME AS OWNER,
+            u.NAME AS owner,
             c.company,
             c.job,
             c.email,
@@ -165,11 +165,83 @@
         WHERE c.id = #{id}
     </select>
 
+    <select id="getClueById2" resultType="com.bjpowernode.crm.workbench.entity.Clue">
+
+        SELECT
+            c.id,
+            c.fullname,
+            c.appellation,
+            c.owner,
+            c.company,
+            c.job,
+            c.email,
+            c.phone,
+            c.website,
+            c.mphone,
+            c.state,
+            c.source,
+            c.createBy,
+            c.createTime,
+            c.editBy,
+            c.editTime,
+            c.description,
+            c.contactSummary,
+            c.nextContactTime,
+            c.address
+        FROM
+            tbl_clue c
+        WHERE c.id = #{id}
+
+    </select>
+
     <select id="getById" resultType="com.bjpowernode.crm.workbench.entity.Clue">
         select * from tbl_clue where id=#{clueId}
     </select>
+
     <delete id="delete">
         delete from tbl_clue where id=#{id}
+    </delete>
+
+    <update id="updateClue">
+
+        update tbl_clue
+
+        set
+
+            fullname = #{fullname},
+            appellation = #{appellation},
+            owner = #{owner},
+            company = #{company},
+            job = #{job},
+            email = #{email},
+            phone = #{phone},
+            website = #{website},
+            mphone = #{mphone},
+            state = #{state},
+            source = #{source},
+            editBy = #{editBy},
+            editTime = #{editTime},
+            description = #{description},
+            contactSummary = #{contactSummary},
+            nextContactTime = #{nextContactTime},
+            address = #{address}
+
+        where
+            id = #{id}
+
+    </update>
+
+    <delete id="delete2">
+
+        delete from tbl_clue
+
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+
+            #{id}
+
+        </foreach>
+
     </delete>
 
 </mapper>

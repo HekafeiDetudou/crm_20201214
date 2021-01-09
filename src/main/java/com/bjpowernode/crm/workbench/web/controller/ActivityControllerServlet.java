@@ -135,6 +135,7 @@ public class ActivityControllerServlet extends HttpServlet {
 
     }
 
+    //执行备注的删除操作
     private void deleteRemark(HttpServletRequest req, HttpServletResponse resp) {
 
         System.out.println("执行备注的删除操作");
