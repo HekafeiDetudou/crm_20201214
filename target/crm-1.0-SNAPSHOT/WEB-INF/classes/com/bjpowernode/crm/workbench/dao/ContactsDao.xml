@@ -48,6 +48,179 @@
         select * from tbl_contacts where fullname like '%' #{fullname} '%'
     </select>
 
+    <select id="getTotalByCondition" resultType="int">
+
+        SELECT
+            count(*)
+        FROM
+            tbl_contacts c
+            JOIN tbl_user u ON c.owner = u.id
+            JOIN tbl_customer cus ON c.customerId = cus.id
+
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                and c.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and con.name like '%' #{customerName} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source like '%' #{source} '%'
+            </if>
+            <if test="birth!=null and birth!=''">
+                and c.birth like '%' #{birth} '%'
+            </if>
+
+        </where>
+
+    </select>
+
+    <select id="getContactsByCondition" resultType="com.bjpowernode.crm.workbench.entity.Contacts">
+
+        SELECT
+
+            c.id,
+            c.fullname,
+            cus.name as customerId,
+            u.name AS owner,
+            c.source,
+            c.birth
+
+        FROM
+            tbl_contacts c
+            JOIN tbl_user u ON c.owner = u.id
+            JOIN tbl_customer cus ON c.customerId = cus.id
+
+        <where>
+            <if test="owner!=null and owner!=''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                and c.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and con.name like '%' #{customerName} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source like '%' #{source} '%'
+            </if>
+            <if test="birth!=null and birth!=''">
+                and c.birth like '%' #{birth} '%'
+            </if>
+
+        </where>
+
+        ORDER BY c.createTime desc
+
+        limit #{skipCount},#{pageSize}
+
+    </select>
+
+    <delete id="delete">
+
+        delete
+
+        from tbl_contacts
+
+        where id in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </delete>
+
+    <select id="getContactsById" resultType="com.bjpowernode.crm.workbench.entity.Contacts">
+
+        select
+            c.id,
+            c.owner,
+            c.source,
+            cus.name as customerId,
+            c.fullname,
+            c.appellation,
+            c.email,
+            c.mphone,
+            c.job,
+            c.birth,
+            c.createBy,
+            c.createTime,
+            c.editBy,
+            c.editTime,
+            c.description,
+            c.contactSummary,
+            c.nextContactTime,
+            c.address
+        from
+            tbl_contacts c
+            JOIN tbl_customer cus on c.customerId = cus.id
+        where c.id = #{id}
+
+    </select>
+
+    <update id="updateContacts">
+
+        update tbl_contacts
+
+        set
+            owner = #{owner},
+            source = #{source},
+            customerId = #{customerId},
+            fullname = #{fullname},
+            appellation = #{appellation},
+            email = #{email},
+            mphone = #{mphone},
+            job = #{job},
+            birth = #{birth},
+            editBy = #{editBy},
+            editTime = #{editTime},
+            description = #{description},
+            contactSummary = #{contactSummary},
+            nextContactTime = #{nextContactTime},
+            address = #{address}
+        where
+            id = #{id}
+
+    </update>
+
+    <select id="getDetailById" resultType="com.bjpowernode.crm.workbench.entity.Contacts">
+
+        select
+
+            c.id,
+            u.name as owner,
+            c.source,
+            cus.name as customerId,
+            c.fullname,
+            c.appellation,
+            c.email,
+            c.mphone,
+            c.job,
+            c.birth,
+            c.createBy,
+            c.createTime,
+            c.editBy,
+            c.editTime,
+            c.description,
+            c.contactSummary,
+            c.nextContactTime,
+            c.address
+
+
+        from
+            tbl_contacts c
+            join tbl_user u on c.owner = u.id
+            join tbl_customer cus on c.customerId = cus.id
+        where
+            c.id = #{id}
+
+    </select>
+
 </mapper>
 
 

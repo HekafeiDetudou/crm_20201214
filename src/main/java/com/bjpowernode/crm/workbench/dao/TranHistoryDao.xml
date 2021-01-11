@@ -31,6 +31,38 @@
         select * from tbl_tran_history where tranId=#{id}
     </select>
 
+    <select id="getCountByTids" resultType="int">
+
+        select count(*)
+
+        from tbl_tran_history
+
+        where tranId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </select>
+
+    <delete id="delete">
+
+        delete
+
+        from tbl_tran_history
+
+        where tranId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </delete>
+
 </mapper>
 
 

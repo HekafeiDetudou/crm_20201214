@@ -97,6 +97,117 @@
             //页面加载完毕后，展现交易历史列表
             showHistoryList();
 
+            //页面加载完毕之后，展现市场活动关联的备注信息列表
+            showRemarkList();
+
+            //加入备注的鼠标动画
+            $("#remarkBody").on("mouseover",".remarkDiv",function(){
+                $(this).children("div").children("div").show();
+            })
+            $("#remarkBody").on("mouseout",".remarkDiv",function(){
+                $(this).children("div").children("div").hide();
+            })
+
+            //为备注的保存按钮绑定事件，执行备注的添加操作
+            $("#saveRemarkBtn").click(function (){
+
+                $.ajax({
+                    url:"workbench/transaction/saveRemark.do",
+                    data : {
+                        "noteContent" : $.trim($("#remark").val()),
+                        "tranId" : "${t.id}"
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success : function (data){
+
+                        /*
+                        data
+                            {"success":true/false,"tranRemark":{备注}}
+                         */
+                        if (data.success){
+
+                            //如果备注保存成功,清空文本域中的内容
+                            $("#remark").val("");
+
+                            //将这个备注追加到文本域上方
+                            var html = "";
+
+                            html += '<div id="'+data.tranRemark.id+'" class="remarkDiv" style="height: 60px;">';
+                            html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+                            html += '<div style="position: relative; top: -40px; left: 40px;" >';
+                            html += '<h5 id="e'+data.tranRemark.id+'" >'+data.tranRemark.noteContent+'</h5>';
+                            html += '<font color="gray">交易</font> <font color="gray">-</font> <b>${t.name}</b> <small style="color: gray;" id="s'+data.tranRemark.id+'" > '+(data.tranRemark.createTime)+' 由'+(data.tranRemark.createBy)+'</small>';
+                            html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+data.tranRemark.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #2a5caa;"></span></a>';
+                            html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+data.tranRemark.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
+                            html += '</div>';
+                            html += '</div>';
+                            html += '</div>';
+
+                            $("#remarkDiv").before(html);
+
+                        }else {
+
+                            //如果备注保存失败
+                            alert("备注保存失败");
+
+                        }
+
+
+                    }
+                })
+
+
+            })
+
+            //声明模态窗口的更新按钮，点击按钮后，将更改后的备注信息发送至后台，更新数据库信息
+            $("#updateRemarkBtn").click(function (){
+
+                var id = $("#remarkId").val();
+
+                $.ajax({
+                    url:"workbench/transaction/updateRemark.do",
+                    data : {
+                        /*
+                            data
+                                id,noteContent
+                         */
+                        "id" : id,
+                        "noteContent" : $.trim($("#noteContent").val())
+
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success : function (data){
+
+                        /*
+                            后台返回来的数据
+                                {"success":true/false,"tranRemark":{tranRemark}}
+                         */
+                        if (data.success){
+
+                            //修改备注成功
+                            //更新div中相应的信息，需要更新的内容有 noteContent,editTime,editBy
+                            $("#e"+id).html(data.tranRemark.noteContent);
+                            $("#s"+id).html(data.tranRemark.editTime+ ' 由'+data.tranRemark.editBy);
+
+                            //内容更新成功之后，关闭模态窗口
+                            $("#editRemarkModal").modal("hide");
+
+
+                        }else{
+
+                            alert("修改备注失败");
+
+                        }
+
+                    }
+                })
+
+            })
+
         });
 
         //声明展示交易历史函数
@@ -137,12 +248,134 @@
 
         }
 
+        //声明展示备注列表的函数
+        function showRemarkList(){
 
+            $.ajax({
+                url:"workbench/transaction/getRemarkListByTranId.do",
+                data : {
+
+                    //传递过去的参数
+                    "tranId" : "${t.id}"
+
+                },
+                type:"get",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                    * data
+                    *       [{备注1},{2},{3}]
+                    * */
+
+                    var html = "";
+                    $.each(data,function (i,n){
+
+                        /*
+                        href="javascript:void(0);
+                        禁用超链接，只能以触发事件的形式来操作
+                         */
+
+                        html += '<div id="'+n.id+'" class="remarkDiv" style="height: 60px;">';
+                        html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+                        html += '<div style="position: relative; top: -40px; left: 40px;" >';
+                        html += '<h5 id="e'+n.id+'" >'+n.noteContent+'</h5>';
+                        html += '<font color="gray">交易</font> <font color="gray">-</font> <b>${t.name}</b> <small style="color: gray;" id="s'+n.id+'" > '+(n.editFlag==0 ? n.createTime:n.editTime )+' 由'+(n.editFlag==0 ? n.createBy:n.editBy)+'</small>';
+                        html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+                        html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #2a5caa;"></span></a>';
+                        html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+                        html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';
+
+                    })
+
+                    $("#remarkDiv").before(html);
+
+                }
+            })
+
+        }
+
+        //声明备注的删除操作
+        function deleteRemark(id){
+
+            //发出一个Ajax请求，删除后台数据库中的remark
+            $.ajax({
+                url:"workbench/transaction/deleteRemark.do",
+                data : {
+                    "id" : id
+                },
+                type:"post",
+                dataType:"json",
+                success : function (data){
+                    if (data.success){
+                        $("#"+id).remove();
+                    }else{
+                        //如果删除失败，则弹出提示框提示用户删除失败
+                        alert("备注信息删除失败");
+                    }
+                }
+            })
+
+        }
+
+        //声明备注修改按钮，点击按钮后执行修改操作
+        function editRemark(id){
+
+            //alert(id);
+
+            //将备注的id到隐藏域中
+            $("#remarkId").val(id);
+
+            //找到指定的存放备注信息的h5标签
+            var noteContent = $("#e"+id).html();
+
+            //将老的备注内容放到模态窗口中，以便修改
+            $("#noteContent").val(noteContent);
+
+            //展现修改备注的模态窗口
+            $("#editRemarkModal").modal("show");
+
+
+        }
 
     </script>
 
 </head>
 <body>
+
+<!-- 修改交易备注的模态窗口 -->
+<div class="modal fade" id="editRemarkModal" role="dialog">
+
+    <div class="modal-dialog" role="document" style="width: 40%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="edit-remark">修改备注</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <%-- 备注的id --%>
+                    <input type="hidden" id="remarkId">
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10" style="width: 81%;">
+                            <textarea class="form-control" rows="3" id="noteContent"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 返回按钮 -->
 <div style="position: relative; top: 35px; left: 10px;">
@@ -268,12 +501,12 @@
 </div>
 
 <!-- 备注 -->
-<div style="position: relative; top: 100px; left: 40px;">
+<div id="remarkBody" style="position: relative; top: 100px; left: 40px;">
     <div class="page-header">
         <h4>备注</h4>
     </div>
 
-    <!-- 备注1 -->
+    <%--<!-- 备注1 -->
     <div class="remarkDiv" style="height: 60px;">
         <img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
         <div style="position: relative; top: -40px; left: 40px;" >
@@ -299,14 +532,14 @@
                 <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
             </div>
         </div>
-    </div>
+    </div>--%>
 
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
             <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary" id="saveRemarkBtn">保存</button>
             </p>
         </form>
     </div>

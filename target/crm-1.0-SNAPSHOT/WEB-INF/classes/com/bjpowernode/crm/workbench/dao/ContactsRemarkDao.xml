@@ -28,7 +28,68 @@
 
         )
     </insert>
-  	
+
+    <select id="getCountByAids" resultType="int">
+
+        select count(*)
+
+        from tbl_contacts_remark
+
+        where contactsId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </select>
+
+    <delete id="delete">
+
+        delete
+
+        from tbl_contacts_remark
+
+        where contactsId in
+
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+
+            #{aid}
+
+        </foreach>
+
+    </delete>
+
+    <select id="getRemarkListByContactsId" resultType="com.bjpowernode.crm.workbench.entity.ContactsRemark">
+
+        select * from tbl_contacts_remark where contactsId = #{contactsId}
+
+    </select>
+
+  	<delete id="deleteById">
+
+        delete
+
+        from tbl_contacts_remark
+
+        where id = #{id}
+
+    </delete>
+
+    <update id="updateRemark">
+
+        update tbl_contacts_remark
+        set
+            noteContent=#{noteContent},
+            editFlag=#{editFlag},
+            editBy=#{editBy},
+            editTime=#{editTime}
+        where
+            id=#{id}
+
+    </update>
+
 </mapper>
 
 

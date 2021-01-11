@@ -27,7 +27,6 @@
         </where>
     </select>
 
-
     <select id="getActivityByCondition" parameterType="java.util.Map" resultType="com.bjpowernode.crm.workbench.entity.Activity">
 
         SELECT
@@ -46,7 +45,7 @@
             <if test="name!=null and name!=''">
                 a.name like '%' #{name} '%'
             </if>
-            <if test="owner!=null and owner!='' and owner">
+            <if test="owner!=null and owner!=''">
                 and u.name like '%' #{owner} '%'
             </if>
             <if test="startDate!=null and startDate!=''">
@@ -62,7 +61,6 @@
         limit #{skipCount},#{pageSize}
     </select>
 
-    
     <insert id="save">
         insert into tbl_activity(
 
@@ -88,7 +86,6 @@
                   #{createBy}
               )
     </insert>
-
 
     <delete id="delete">
 
@@ -202,7 +199,6 @@
         where a.name like '%' #{activityName} '%'
 
     </select>
-
 
 </mapper>
 

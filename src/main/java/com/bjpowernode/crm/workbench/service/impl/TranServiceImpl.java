@@ -6,9 +6,8 @@ import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.dao.CustomerDao;
 import com.bjpowernode.crm.workbench.dao.TranDao;
 import com.bjpowernode.crm.workbench.dao.TranHistoryDao;
-import com.bjpowernode.crm.workbench.entity.Customer;
-import com.bjpowernode.crm.workbench.entity.Tran;
-import com.bjpowernode.crm.workbench.entity.TranHistory;
+import com.bjpowernode.crm.workbench.dao.TranRemarkDao;
+import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.TranService;
 
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import java.util.Map;
 public class TranServiceImpl implements TranService {
 
     private TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+    private TranRemarkDao tranRemarkDao = SqlSessionUtil.getSqlSession().getMapper(TranRemarkDao.class);
     private TranHistoryDao tranHistoryDao = SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
     private CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
 
@@ -144,6 +144,89 @@ public class TranServiceImpl implements TranService {
 
         //返回map
         return map;
+
+    }
+
+    @Override
+    public boolean delete(String[] ids) {
+
+        boolean flag = true;
+
+        //查询出需要删除的备注的数量
+        int count = tranRemarkDao.getCountByAids(ids);
+
+        //删除关联该交易的备注信息，返回受影响的条数（实际删除的条数）
+        int effectCount = tranRemarkDao.delete(ids);
+        if (count != effectCount){
+            flag = false;
+        }
+
+        //查询出需要删除的交易历史
+        int count2 = tranHistoryDao.getCountByTids(ids);
+
+        //删除相关的交易历史
+        int effectCount2 = tranHistoryDao.delete(ids);
+        if (count2 != effectCount2){
+            flag = false;
+        }
+
+        //删除该条市场活动的信息
+        int count3 = tranDao.delete(ids);
+        if (count3 != ids.length){
+            flag = false;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public List<TranRemark> getRemarkListByTranId(String tranId) {
+
+        List<TranRemark> trList = tranRemarkDao.getRemarkListByTranId(tranId);
+
+        return trList;
+
+    }
+
+    @Override
+    public boolean saveReamrk(TranRemark tranRemark) {
+
+        boolean flag = false;
+        int count = tranRemarkDao.saveRemark(tranRemark);
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public boolean deleteRemark(String id) {
+
+        boolean flag = false;
+
+        int count = tranRemarkDao.deleteById(id);
+
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public boolean updateReamrk(TranRemark tranRemark) {
+
+        boolean flag = false;
+        int count = tranRemarkDao.updateRemark(tranRemark);
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
 
     }
 }

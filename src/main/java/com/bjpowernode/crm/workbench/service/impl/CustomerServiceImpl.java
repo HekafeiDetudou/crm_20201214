@@ -7,7 +7,9 @@ import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.dao.CustomerDao;
 import com.bjpowernode.crm.workbench.dao.CustomerRemarkDao;
 import com.bjpowernode.crm.workbench.entity.Activity;
+import com.bjpowernode.crm.workbench.entity.ActivityRemark;
 import com.bjpowernode.crm.workbench.entity.Customer;
+import com.bjpowernode.crm.workbench.entity.CustomerRemark;
 import com.bjpowernode.crm.workbench.service.CustomerService;
 
 import java.util.HashMap;
@@ -122,6 +124,56 @@ public class CustomerServiceImpl implements CustomerService {
             //添加失败
             flag = false;
         }
+        return flag;
+
+    }
+
+    @Override
+    public boolean saveReamrk(CustomerRemark customerRemark) {
+
+        boolean flag = false;
+        int count = customerRemarkDao.saveRemark(customerRemark);
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public List<CustomerRemark> getRemarkListByCustomerId(String customerId) {
+
+        List<CustomerRemark> crList = customerRemarkDao.getRemarkListByCustomerId(customerId);
+
+        return crList;
+
+    }
+
+    @Override
+    public boolean deleteRemark(String id) {
+
+        boolean flag = false;
+
+        int count = customerRemarkDao.deleteById(id);
+
+        if (count == 1){
+            flag = true;
+        }
+
+        return flag;
+
+    }
+
+    @Override
+    public boolean updateReamrk(CustomerRemark customerRemark) {
+
+        boolean flag = false;
+        int count = customerRemarkDao.updateRemark(customerRemark);
+        if (count == 1){
+            flag = true;
+        }
+
         return flag;
 
     }

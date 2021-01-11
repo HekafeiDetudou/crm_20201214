@@ -124,6 +124,10 @@
         <url-pattern>/workbench/customer/delete.do</url-pattern>
         <url-pattern>/workbench/customer/getUserListAndCustomer.do</url-pattern>
         <url-pattern>/workbench/customer/updateCustomer.do</url-pattern>
+        <url-pattern>/workbench/customer/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/customer/getRemarkListByCustomerId.do</url-pattern>
+        <url-pattern>/workbench/customer/deleteRemark.do</url-pattern>
+        <url-pattern>/workbench/customer/updateRemark.do</url-pattern>
     </servlet-mapping>
 
 
@@ -136,7 +140,18 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ContactsControllerServlet</servlet-name>
-        <url-pattern>/workbench/contacts/xxx.do</url-pattern>
+        <url-pattern>/workbench/contacts/getUserList.do</url-pattern>
+        <url-pattern>/workbench/contacts/getCustomerName.do</url-pattern>
+        <url-pattern>/workbench/contacts/save.do</url-pattern>
+        <url-pattern>/workbench/contacts/pageList.do</url-pattern>
+        <url-pattern>/workbench/contacts/delete.do</url-pattern>
+        <url-pattern>/workbench/contacts/getUserListAndContacts.do</url-pattern>
+        <url-pattern>/workbench/contacts/updateContacts.do</url-pattern>
+        <url-pattern>/workbench/contacts/detail.do</url-pattern>
+        <url-pattern>/workbench/contacts/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/contacts/getRemarkListByContactsId.do</url-pattern>
+        <url-pattern>/workbench/contacts/deleteRemark.do</url-pattern>
+        <url-pattern>/workbench/contacts/updateRemark.do</url-pattern>
     </servlet-mapping>
 
 
@@ -156,6 +171,11 @@
         <url-pattern>/workbench/transaction/detail.do</url-pattern>
         <url-pattern>/workbench/transaction/getHistoryListByTranId.do</url-pattern>
         <url-pattern>/workbench/transaction/getCharts.do</url-pattern>
+        <url-pattern>/workbench/transaction/delete.do</url-pattern>
+        <url-pattern>/workbench/transaction/getRemarkListByTranId.do</url-pattern>
+        <url-pattern>/workbench/transaction/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/transaction/deleteRemark.do</url-pattern>
+        <url-pattern>/workbench/transaction/updateRemark.do</url-pattern>
     </servlet-mapping>
 
 

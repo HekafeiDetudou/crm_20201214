@@ -19,4 +19,6 @@ public interface TranDao {
 
     List<Map<String, Object>> getCharts();
 
+    int delete(String[] ids);
+
 }

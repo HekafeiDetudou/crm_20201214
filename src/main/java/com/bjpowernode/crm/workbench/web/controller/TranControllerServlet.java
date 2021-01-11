@@ -61,10 +61,138 @@ public class TranControllerServlet extends HttpServlet {
 
             getCharts(request,response);
 
+        }else if ("/workbench/transaction/delete.do".equals(path)){
+
+            delete(request,response);
+
+        }else if ("/workbench/transaction/getRemarkListByTranId.do".equals(path)){
+
+            getRemarkListByTranId(request,response);
+
+        }else if ("/workbench/transaction/saveRemark.do".equals(path)){
+
+            saveRemark(request,response);
+
+        }else if ("/workbench/transaction/deleteRemark.do".equals(path)){
+
+            deleteRemark(request,response);
+
+        }else if ("/workbench/transaction/updateRemark.do".equals(path)){
+
+            updateRemark(request,response);
+
         }
 
     }
 
+    //进入到备注的修改操作
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到备注的修改操作");
+
+        String noteContent = request.getParameter("noteContent");
+        String id = request.getParameter("id");
+        String editTime = DateTimeUtil.getSysTime();
+        String editBy = ((User)request.getSession().getAttribute("user")).getName();
+        String editFlag = "1";
+
+        TranRemark tranRemark = new TranRemark();
+        tranRemark.setNoteContent(noteContent);
+        tranRemark.setId(id);
+        tranRemark.setEditFlag(editFlag);
+        tranRemark.setEditBy(editBy);
+        tranRemark.setEditTime(editTime);
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = tranService.updateReamrk(tranRemark);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("tranRemark",tranRemark);
+
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+    //执行备注的删除操作
+    private void deleteRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("执行备注的删除操作");
+
+        String id = request.getParameter("id");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        boolean flag = tranService.deleteRemark(id);
+
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    //进入到保存备注信息操作
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到保存备注信息操作");
+
+        String noteContent = request.getParameter("noteContent");
+        String tranId = request.getParameter("tranId");
+        String id = UUIDUtil.getUUID();
+        String createTime = DateTimeUtil.getSysTime();
+        String createBy = ((User)request.getSession().getAttribute("user")).getName();
+        String editFlag = "0";
+
+        TranRemark tranRemark = new TranRemark();
+        tranRemark.setTranId(tranId);
+        tranRemark.setCreateBy(createBy);
+        tranRemark.setCreateTime(createTime);
+        tranRemark.setEditFlag(editFlag);
+        tranRemark.setId(id);
+        tranRemark.setNoteContent(noteContent);
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = tranService.saveReamrk(tranRemark);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("tranRemark",tranRemark);
+
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+    //根据交易的id取得备注信息列表
+    private void getRemarkListByTranId(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("根据交易的id取得备注信息列表");
+
+        String tranId = request.getParameter("tranId");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        List<TranRemark> trList = tranService.getRemarkListByTranId(tranId);
+
+        PrintJson.printJsonObj(response,trList);
+
+    }
+
+    //执行交易的删除操作
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("执行交易的删除操作");
+
+        String[] ids = request.getParameterValues("id");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        boolean flag = tranService.delete(ids);
+
+        System.out.println(flag);
+
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    //进入到获取ECharts数据操作
     private void getCharts(HttpServletRequest request, HttpServletResponse response) {
 
         System.out.println("进入到获取ECharts数据操作");
@@ -82,6 +210,7 @@ public class TranControllerServlet extends HttpServlet {
 
     }
 
+    //获取交易历史记录
     private void getHistoryListByTranId(HttpServletRequest request, HttpServletResponse response) {
 
         System.out.println("获取交易历史记录");
@@ -258,6 +387,7 @@ public class TranControllerServlet extends HttpServlet {
 
 
     }
+
 }
 
 

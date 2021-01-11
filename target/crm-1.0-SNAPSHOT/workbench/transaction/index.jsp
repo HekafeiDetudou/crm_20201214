@@ -62,6 +62,74 @@
 
             })
 
+            //为删除按钮绑定事件，执行市场活动的删除操作
+            $("#deleteBtn").click(function (){
+
+                //找到复选框中所有选中的jQuery对象
+                var $xz = $("input[name=xz]:checked");
+
+                if ($xz.length == 0){
+
+                    //用户没有选择需要删除的记录
+                    alert("请选择需要删除的记录");
+
+                }else {
+
+                    //程序执行到此处，说明用户选择了记录，但是有可能是1条，也可能是多条
+                    //alert("123");
+
+                    if (confirm("确定要删除所选中的数据吗？删除后不可恢复！")){
+
+                        //拼接参数
+                        var param = "";
+
+                        //将$xz中的每一个dom对象遍历出来，取其value值，就相当于取得了需要删除的记录id
+                        for (var i=0; i<$xz.length; i++){
+
+                            param += "id=" + $($xz[i]).val();
+                            //如果不是最后一个元素，则需要追加&
+                            if (i<$xz.length - 1){
+                                param += "&";
+                            }
+                        }
+
+                        //alert(param);
+                        //使用ajax发送请求，使后台执行删除操作
+                        $.ajax({
+                            url:"workbench/transaction/delete.do",
+                            data : param,
+                            type:"post",
+                            dataType:"json",
+                            success : function (data){
+                                /*
+                                *
+                                * data
+                                *       {"success":true/false}
+                                * */
+                                if (data.success){
+                                    //删除成功
+                                    //对页面数据进行局部刷新
+                                    //pageList(1,2);
+                                    //删除成功后，回到第一页，维持每页展现的记录数
+                                    pageList(1,$("#tranPage").bs_pagination('getOption', 'rowsPerPage'));
+
+
+                                }else {
+
+                                    //删除失败
+                                    alert("删除市场活动失败");
+
+                                }
+                            }
+                        })
+                    }
+
+
+
+                }
+
+            })
+
         });
 
         function pageList(pageNo,pageSize){
@@ -287,7 +355,7 @@
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/add.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
                 <button type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.jsp';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
             </div>
 
         </div>

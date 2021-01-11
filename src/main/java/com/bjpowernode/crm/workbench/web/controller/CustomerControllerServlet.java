@@ -9,7 +9,9 @@ import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.entity.Activity;
+import com.bjpowernode.crm.workbench.entity.ActivityRemark;
 import com.bjpowernode.crm.workbench.entity.Customer;
+import com.bjpowernode.crm.workbench.entity.CustomerRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
@@ -60,7 +62,115 @@ public class CustomerControllerServlet extends HttpServlet {
 
             updateCustomer(request,response);
 
+        }else if ("/workbench/customer/saveRemark.do".equals(path)){
+
+            saveRemark(request,response);
+
+        }else if ("/workbench/customer/getRemarkListByCustomerId.do".equals(path)){
+
+            getRemarkListByCustomerId(request,response);
+
+        }else if ("/workbench/customer/deleteRemark.do".equals(path)){
+
+            deleteRemark(request,response);
+
+        }else if ("/workbench/customer/updateRemark.do".equals(path)){
+
+            updateRemark(request,response);
+
         }
+
+    }
+
+    //进入到备注的修改操作
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到备注的修改操作");
+
+        String noteContent = request.getParameter("noteContent");
+        String id = request.getParameter("id");
+        String editTime = DateTimeUtil.getSysTime();
+        String editBy = ((User)request.getSession().getAttribute("user")).getName();
+        String editFlag = "1";
+
+        CustomerRemark customerRemark = new CustomerRemark();
+        customerRemark.setNoteContent(noteContent);
+        customerRemark.setId(id);
+        customerRemark.setEditFlag(editFlag);
+        customerRemark.setEditBy(editBy);
+        customerRemark.setEditTime(editTime);
+
+        CustomerService customerService = (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        boolean flag = customerService.updateReamrk(customerRemark);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("customerRemark",customerRemark);
+
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+
+    //执行备注的删除操作
+    private void deleteRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("执行备注的删除操作");
+
+        String id = request.getParameter("id");
+
+        CustomerService cs = (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+
+        boolean flag = cs.deleteRemark(id);
+
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    //根据客户的id取得备注信息列表
+    private void getRemarkListByCustomerId(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("根据市场活动的id取得备注信息列表");
+
+        String customerId = request.getParameter("customerId");
+
+        CustomerService customerService = (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+
+        List<CustomerRemark> crList = customerService.getRemarkListByCustomerId(customerId);
+
+        PrintJson.printJsonObj(response,crList);
+
+    }
+
+
+    //进入到保存备注信息操作
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入到保存备注信息操作");
+
+        String noteContent = request.getParameter("noteContent");
+        String customerId = request.getParameter("customerId");
+        String id = UUIDUtil.getUUID();
+        String createTime = DateTimeUtil.getSysTime();
+        String createBy = ((User)request.getSession().getAttribute("user")).getName();
+        String editFlag = "0";
+
+        CustomerRemark customerRemark = new CustomerRemark();
+        customerRemark.setCustomerId(customerId);
+        customerRemark.setCreateBy(createBy);
+        customerRemark.setCreateTime(createTime);
+        customerRemark.setEditFlag(editFlag);
+        customerRemark.setId(id);
+        customerRemark.setNoteContent(noteContent);
+
+        CustomerService cs = (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        boolean flag = cs.saveReamrk(customerRemark);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("customerRemark",customerRemark);
+
+        PrintJson.printJsonObj(response,map);
 
     }
 

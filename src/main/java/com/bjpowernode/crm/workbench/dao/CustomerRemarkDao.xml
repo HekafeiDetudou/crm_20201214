@@ -60,6 +60,50 @@
 
     </delete>
 
+    <insert id="saveRemark">
+
+        INSERT INTO tbl_customer_remark ( id, noteContent, createTime, createBy, customerId ,editFlag)
+        VALUES
+        (
+            #{id},
+            #{noteContent},
+            #{createTime},
+            #{createBy},
+            #{customerId},
+            #{editFlag}
+        )
+
+    </insert>
+
+    <select id="getRemarkListByCustomerId" resultType="com.bjpowernode.crm.workbench.entity.CustomerRemark">
+
+        select * from tbl_customer_remark where customerId = #{customerId}
+
+    </select>
+
+    <delete id="deleteById">
+
+        delete
+
+        from tbl_customer_remark
+
+        where id = #{id}
+
+    </delete>
+
+    <update id="updateRemark">
+
+        update tbl_customer_remark
+        set
+            noteContent=#{noteContent},
+            editFlag=#{editFlag},
+            editBy=#{editBy},
+            editTime=#{editTime}
+        where
+            id=#{id}
+
+    </update>
+
 
 </mapper>
 
