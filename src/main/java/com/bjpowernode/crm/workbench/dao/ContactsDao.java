@@ -22,4 +22,6 @@ public interface ContactsDao {
     int updateContacts(Contacts contacts);
 
     Contacts getDetailById(String id);
+
+    List<Contacts> getContactsListByCustomerId(String customerId);
 }

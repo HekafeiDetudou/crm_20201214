@@ -29,4 +29,13 @@ public interface TranService {
     boolean deleteRemark(String id);
 
     boolean updateReamrk(TranRemark tranRemark);
+
+    List<Tran> getTranListByCustomerId(String customerId);
+
+    List<Tran> getTranListByContactsId(String contactsId);
+
+    boolean edit(Tran tran, String customerName);
+
+    Tran detail2(String id);
+
 }

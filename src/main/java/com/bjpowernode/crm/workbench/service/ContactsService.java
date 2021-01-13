@@ -31,4 +31,5 @@ public interface ContactsService {
 
     boolean updateReamrk(ContactsRemark cr);
 
+    List<Contacts> getContactsListByCustomerId(String customerId);
 }

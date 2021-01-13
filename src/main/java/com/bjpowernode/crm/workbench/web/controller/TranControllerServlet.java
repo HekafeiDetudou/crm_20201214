@@ -81,7 +81,92 @@ public class TranControllerServlet extends HttpServlet {
 
             updateRemark(request,response);
 
+        }else if ("/workbench/transaction/edit.do".equals(path)){
+
+            edit(request,response);
+
+        }else if ("/workbench/transaction/editTran.do".equals(path)){
+
+            editTran(request,response);
+
         }
+
+    }
+
+    //进入到修改交易操作
+    private void editTran(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        System.out.println("进入到修改交易操作");
+
+        String id = request.getParameter("id");
+        String owner = request.getParameter("owner");
+        String money = request.getParameter("money");
+        String name = request.getParameter("name");
+        String expectedDate = request.getParameter("expectedDate");
+        String customerName = request.getParameter("customerName");
+        String stage = request.getParameter("stage");
+        String type = request.getParameter("type");
+        String source = request.getParameter("source");
+        String activityId = request.getParameter("activityId");
+        String contactsId = request.getParameter("contactsId");
+        String description = request.getParameter("description");
+        String contactSummary = request.getParameter("contactSummary");
+        String nextContactTime = request.getParameter("nextContactTime");
+        String editTime = DateTimeUtil.getSysTime();
+        String editBy = ((User)request.getSession().getAttribute("user")).getName();
+
+
+        Tran tran = new Tran();
+
+        tran.setId(id);
+        tran.setOwner(owner);
+        tran.setMoney(money);
+        tran.setName(name);
+        tran.setExpectedDate(expectedDate);
+        //tran.setCustomerId(customerId);
+        tran.setStage(stage);
+        tran.setType(type);
+        tran.setSource(source);
+        tran.setActivityId(activityId);
+        tran.setContactsId(contactsId);
+        tran.setEditBy(editBy);
+        tran.setEditTime(editTime);
+        tran.setDescription(description);
+        tran.setContactSummary(contactSummary);
+        tran.setNextContactTime(nextContactTime);
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        boolean flag = ts.edit(tran,customerName);
+
+        if (flag){
+
+            response.sendRedirect(request.getContextPath() + "/workbench/transaction/index.jsp");
+
+        }
+
+    }
+
+    //跳转到交易修改页
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("跳转到交易修改页的操作");
+
+        String id = request.getParameter("id");
+
+        UserService userService = (UserService) ServiceFactory.getService(new UserServiceImpl());
+        List<User> userList = userService.getUserList();
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran tran = tranService.detail(id);
+        TranService tranService2 = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran tran2 = tranService2.detail2(id);
+
+        request.setAttribute("userList",userList);
+        request.setAttribute("t",tran);
+        request.setAttribute("t2",tran2);
+
+        request.getRequestDispatcher("/workbench/transaction/edit.jsp").forward(request,response);
 
     }
 
@@ -334,6 +419,7 @@ public class TranControllerServlet extends HttpServlet {
         TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
 
         boolean flag = ts.save(tran,customerName);
+
         if (flag){
 
             response.sendRedirect(request.getContextPath() + "/workbench/transaction/index.jsp");

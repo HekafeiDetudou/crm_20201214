@@ -130,6 +130,34 @@
 
             })
 
+            //为修改按钮绑定事件，打开修改操作的模态窗口
+            $("#editBtn").click(function (){
+
+                var $xz = $("input[name=xz]:checked");
+
+                if ($xz.length == 0){
+
+                    //程序执行到此处，说明用户没有选择需要修改的记录
+                    alert("请先选择需要修改的交易");
+
+                }else if ($xz.length > 1){
+
+                    alert("只能选择一个交易进行修改，请重新选择");
+
+                }else{
+
+                    //程序执行到此处，说明用户只选择了一条需要修改的数据
+                    var id = $xz.val();
+
+                    //转发到onclick="window.location.href='workbench/transaction/edit.do';"
+                    //alert(id);
+                    window.location.href='workbench/transaction/edit.do?id='+id;
+
+                }
+
+            })
+
+
         });
 
         function pageList(pageNo,pageSize){
@@ -354,7 +382,7 @@
         <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/add.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-                <button type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.jsp';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+                <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
                 <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
             </div>
 

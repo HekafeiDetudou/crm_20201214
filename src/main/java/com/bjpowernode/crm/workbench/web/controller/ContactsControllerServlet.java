@@ -8,10 +8,7 @@ import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVO;
-import com.bjpowernode.crm.workbench.entity.Activity;
-import com.bjpowernode.crm.workbench.entity.ActivityRemark;
-import com.bjpowernode.crm.workbench.entity.Contacts;
-import com.bjpowernode.crm.workbench.entity.ContactsRemark;
+import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ContactsService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
@@ -86,7 +83,25 @@ public class ContactsControllerServlet extends HttpServlet {
 
             updateRemark(req,resp);
 
+        }else if ("/workbench/contacts/getTranListByContactsId.do".equals(path)){
+
+            getTranListByContactsId(req,resp);
+
         }
+
+    }
+
+    private void getTranListByContactsId(HttpServletRequest req, HttpServletResponse resp) {
+
+        System.out.println("根据联系人id获取和联系人关联的交易列表");
+
+        String contactsId = req.getParameter("contactsId");
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        List<Tran> tranList = ts.getTranListByContactsId(contactsId);
+
+        PrintJson.printJsonObj(resp,tranList);
 
     }
 

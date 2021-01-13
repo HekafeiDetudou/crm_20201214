@@ -128,6 +128,8 @@
         <url-pattern>/workbench/customer/getRemarkListByCustomerId.do</url-pattern>
         <url-pattern>/workbench/customer/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/customer/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/customer/getTranListByCustomerId.do</url-pattern>
+        <url-pattern>/workbench/customer/getContactsListByCustomerId.do</url-pattern>
     </servlet-mapping>
 
 
@@ -152,6 +154,7 @@
         <url-pattern>/workbench/contacts/getRemarkListByContactsId.do</url-pattern>
         <url-pattern>/workbench/contacts/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/contacts/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/contacts/getTranListByContactsId.do</url-pattern>
     </servlet-mapping>
 
 
@@ -176,6 +179,8 @@
         <url-pattern>/workbench/transaction/saveRemark.do</url-pattern>
         <url-pattern>/workbench/transaction/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/transaction/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/transaction/edit.do</url-pattern>
+        <url-pattern>/workbench/transaction/editTran.do</url-pattern>
     </servlet-mapping>
 
 

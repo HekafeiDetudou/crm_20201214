@@ -266,5 +266,14 @@ public class ContactsServiceImpl implements ContactsService {
 
     }
 
+    @Override
+    public List<Contacts> getContactsListByCustomerId(String customerId) {
+
+        List<Contacts> contactsList = contactsDao.getContactsListByCustomerId(customerId);
+
+        return contactsList;
+
+    }
+
 
 }

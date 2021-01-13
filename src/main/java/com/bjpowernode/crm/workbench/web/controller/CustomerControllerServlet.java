@@ -8,14 +8,15 @@ import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVO;
-import com.bjpowernode.crm.workbench.entity.Activity;
-import com.bjpowernode.crm.workbench.entity.ActivityRemark;
-import com.bjpowernode.crm.workbench.entity.Customer;
-import com.bjpowernode.crm.workbench.entity.CustomerRemark;
+import com.bjpowernode.crm.workbench.entity.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.ContactsService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
+import com.bjpowernode.crm.workbench.service.TranService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
+import com.bjpowernode.crm.workbench.service.impl.ContactsServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
+import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -78,7 +79,45 @@ public class CustomerControllerServlet extends HttpServlet {
 
             updateRemark(request,response);
 
+        }else if ("/workbench/customer/getTranListByCustomerId.do".equals(path)){
+
+            getTranListByCustomerId(request,response);
+
+        }else if ("/workbench/customer/getContactsListByCustomerId.do".equals(path)){
+
+            getContactsListByCustomerId(request,response);
+
         }
+
+    }
+
+    //根据客户id获取和客户关联的联系人列表
+    private void getContactsListByCustomerId(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("根据客户id获取和客户关联的联系人列表");
+
+        String customerId = request.getParameter("customerId");
+
+        ContactsService cs = (ContactsService) ServiceFactory.getService(new ContactsServiceImpl());
+
+        List<Contacts> contactsList = cs.getContactsListByCustomerId(customerId);
+
+        PrintJson.printJsonObj(response,contactsList);
+
+    }
+
+    //根据客户id获取和客户关联的交易列表
+    private void getTranListByCustomerId(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("根据客户id获取和客户关联的交易列表");
+
+        String customerId = request.getParameter("customerId");
+
+        TranService ts = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        List<Tran> tranList = ts.getTranListByCustomerId(customerId);
+
+        PrintJson.printJsonObj(response,tranList);
 
     }
 
@@ -110,7 +149,6 @@ public class CustomerControllerServlet extends HttpServlet {
         PrintJson.printJsonObj(response,map);
 
     }
-
 
     //执行备注的删除操作
     private void deleteRemark(HttpServletRequest request, HttpServletResponse response) {
