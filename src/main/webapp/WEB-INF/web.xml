@@ -48,7 +48,7 @@
 
 
 
-    <!--保存用户控制器-->
+    <!--用户控制器-->
     <servlet>
         <servlet-name>userControllerServlet</servlet-name>
         <servlet-class>com.bjpowernode.crm.settings.web.controller.UserControllerServlet</servlet-class>
@@ -56,6 +56,8 @@
     <servlet-mapping>
         <servlet-name>userControllerServlet</servlet-name>
         <url-pattern>/settings/user/login.do</url-pattern>
+        <url-pattern>/settings/visit/updatePwd.do</url-pattern>
+        <url-pattern>/settings/visit/checkPwd.do</url-pattern>
     </servlet-mapping>
 
 

@@ -1,3 +1,4 @@
+<%@ page import="com.bjpowernode.crm.utils.MD5Util" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
@@ -37,9 +38,29 @@
             });
 
             //在页面加载完毕后，在工作区打开相应界面
-            window.open("workbench/main/index.html", "workareaFrame");
+            //window.open("workbench/main/index.html", "workareaFrame");
+            window.open("workbench/activity/index.jsp", "workareaFrame");
+
+            //页面加载完毕后，清空用户文本框中的内容
+            $("#oldPwd").val("");
+            $("#newPwd").val("");
+            $("#confirmPwd").val("");
+
+            //为登录按钮绑定事件执行登录操作
+            $("#updateBtn").click(function (){
+
+                //alert("123");
+                //updatePwd();
+            })
 
         });
+
+        //更改密码
+        function updatePwd(){
+
+
+
+        }
 
     </script>
 
@@ -84,33 +105,34 @@
                 <h4 class="modal-title">修改密码</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form  class="form-horizontal" role="form" id="updatePwd" action="settings/visit/updatePwd.do" method="post">
                     <div class="form-group">
                         <label for="oldPwd" class="col-sm-2 control-label">原密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="oldPwd" style="width: 200%;">
+                            <input type="text" class="form-control" id="oldPwd" name="oldPwd" style="width: 200%;">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="newPwd" class="col-sm-2 control-label">新密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="newPwd" style="width: 200%;">
+                            <input type="text" class="form-control" id="newPwd" name="newPwd" style="width: 200%;">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPwd" class="col-sm-2 control-label">确认密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
+                            <input type="text" class="form-control" id="confirmPwd" name="confirmPwd" style="width: 200%;">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                <span id="msg" style="color: red"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        onclick="window.location.href='login.html';">更新
+                <button type="button" class="btn btn-primary" id="updateBtn" <%--data-dismiss="modal"
+                        onclick="window.location.href='login.jsp';"--%>>更新
                 </button>
             </div>
         </div>
@@ -133,7 +155,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        onclick="window.location.href='login.html';">确定
+                        onclick="window.location.href='login.jsp';">确定
                 </button>
             </div>
         </div>
@@ -154,9 +176,9 @@
                 </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <ul class="dropdown-menu">
-                    <li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
+                    <%--<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
                     <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span
-                            class="glyphicon glyphicon-file"></span> 我的资料</a></li>
+                            class="glyphicon glyphicon-file"></span> 我的资料</a></li>--%>
                     <li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span
                             class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
                     <li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span

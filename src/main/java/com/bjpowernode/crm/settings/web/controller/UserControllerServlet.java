@@ -26,7 +26,17 @@ public class UserControllerServlet extends HttpServlet {
         if ("/settings/user/login.do".equals(path)){
 
             login(req,resp);
+        }else if ("/workbench/visit/updatePswd.do".equals(path)){
+
+            updatePswd(req,resp);
+
         }
+    }
+
+    private void updatePswd(HttpServletRequest req, HttpServletResponse resp) {
+
+        
+
     }
 
     private void login(HttpServletRequest req, HttpServletResponse resp) {

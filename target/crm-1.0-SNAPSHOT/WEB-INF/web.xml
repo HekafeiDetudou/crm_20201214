@@ -48,7 +48,7 @@
 
 
 
-    <!--保存用户控制器-->
+    <!--用户控制器-->
     <servlet>
         <servlet-name>userControllerServlet</servlet-name>
         <servlet-class>com.bjpowernode.crm.settings.web.controller.UserControllerServlet</servlet-class>
@@ -56,6 +56,8 @@
     <servlet-mapping>
         <servlet-name>userControllerServlet</servlet-name>
         <url-pattern>/settings/user/login.do</url-pattern>
+        <url-pattern>/settings/visit/updatePwd.do</url-pattern>
+        <url-pattern>/settings/visit/checkPwd.do</url-pattern>
     </servlet-mapping>
 
 
@@ -128,6 +130,8 @@
         <url-pattern>/workbench/customer/getRemarkListByCustomerId.do</url-pattern>
         <url-pattern>/workbench/customer/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/customer/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/customer/getTranListByCustomerId.do</url-pattern>
+        <url-pattern>/workbench/customer/getContactsListByCustomerId.do</url-pattern>
     </servlet-mapping>
 
 
@@ -152,6 +156,7 @@
         <url-pattern>/workbench/contacts/getRemarkListByContactsId.do</url-pattern>
         <url-pattern>/workbench/contacts/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/contacts/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/contacts/getTranListByContactsId.do</url-pattern>
     </servlet-mapping>
 
 
@@ -176,6 +181,8 @@
         <url-pattern>/workbench/transaction/saveRemark.do</url-pattern>
         <url-pattern>/workbench/transaction/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/transaction/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/transaction/edit.do</url-pattern>
+        <url-pattern>/workbench/transaction/editTran.do</url-pattern>
     </servlet-mapping>
 
 

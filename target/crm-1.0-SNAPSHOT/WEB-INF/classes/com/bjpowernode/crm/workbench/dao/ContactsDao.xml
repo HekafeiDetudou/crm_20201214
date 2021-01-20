@@ -221,6 +221,12 @@
 
     </select>
 
+    <select id="getContactsListByCustomerId" resultType="com.bjpowernode.crm.workbench.entity.Contacts">
+
+        select * from tbl_contacts where customerId=#{customerId}
+
+    </select>
+
 </mapper>
 
 

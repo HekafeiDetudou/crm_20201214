@@ -158,6 +158,9 @@
 
             })
 
+            //展现交易列表
+            showTranList();
+
         });
 
         //声明展示备注列表的函数
@@ -271,6 +274,46 @@
             //展现修改备注的模态窗口
             $("#editRemarkModal").modal("show");
 
+
+        }
+
+        //展现关联的交易信息列表
+        function showTranList(){
+
+            $.ajax({
+                url:"workbench/contacts/getTranListByContactsId.do",
+                data : {
+                    "contactsId" : "${c.id}"
+                },
+                type:"get",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                    * data
+                    *       [{交易1},{交易2},{交易3}...]
+                    * */
+
+                    var html = "";
+
+                    $.each(data,function (i,n){
+
+                        html += '<tr>';
+                        html += '<td>'+n.name+'</td>';
+                        html += '<td>'+n.money+'</td>';
+                        html += '<td>'+n.stage+'</td>';
+                        /*html += '<td>90</td>';*/
+                        html += '<td>'+n.expectedDate+'</td>';
+                        html += '<td>'+n.type+'</td>';
+                        /*html += '<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>';*/
+                        html += '</tr>';
+
+                    })
+
+                    $("#tranBody").html(html);
+
+                }
+            })
 
         }
 
@@ -669,40 +712,40 @@
             <h4>交易</h4>
         </div>
         <div style="position: relative;top: 0px;">
-            <table id="activityTable3" class="table table-hover" style="width: 900px;">
+            <table class="table table-hover" style="width: 900px;">
                 <thead>
                 <tr style="color: #B3B3B3;">
                     <td>名称</td>
                     <td>金额</td>
                     <td>阶段</td>
-                    <td>可能性</td>
+                    <%--<td>可能性</td>--%>
                     <td>预计成交日期</td>
                     <td>类型</td>
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
+                <tbody id="tranBody">
+                <%--<tr>
                     <td><a href="transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
                     <td>5,000</td>
                     <td>谈判/复审</td>
                     <td>90</td>
                     <td>2017-02-07</td>
                     <td>新业务</td>
-                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#unbundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-                </tr>
+                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
+                </tr>--%>
                 </tbody>
             </table>
         </div>
 
-        <div>
+        <%--<div>
             <a href="transaction/save.html" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
-        </div>
+        </div>--%>
     </div>
 </div>
 
 <!-- 市场活动 -->
-<div>
+<%--<div>
     <div style="position: relative; top: 60px; left: 40px;">
         <div class="page-header">
             <h4>市场活动</h4>
@@ -734,7 +777,7 @@
             <a href="javascript:void(0);" data-toggle="modal" data-target="#bundActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
         </div>
     </div>
-</div>
+</div>--%>
 
 
 <div style="height: 200px;"></div>
