@@ -38,4 +38,6 @@ public interface TranService {
 
     Tran detail2(String id);
 
+    Map<String, Object> getCharts2();
+
 }

@@ -70,4 +70,37 @@ public class UserServiceImpl implements UserService {
 
         return userList;
     }
+
+    @Override
+    public boolean updatePwd(User user) {
+
+        boolean flag = true;
+        int num = userDao.updatePwd(user);
+        if (num != 1){
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean checkLoginAct(String loginAct) {
+
+        boolean flag = false;
+        int num = userDao.checkLoginAct(loginAct);
+        if (num == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean addUser(User user) {
+
+        boolean flag = true;
+        int num = userDao.userAdd(user);
+        if (num != 1){
+            flag = false;
+        }
+        return flag;
+    }
 }

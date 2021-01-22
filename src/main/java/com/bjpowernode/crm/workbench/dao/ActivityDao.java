@@ -28,4 +28,10 @@ public interface ActivityDao {
 
     List<Activity> getActivityListByNameJust(String activityName);
 
+    List<String> getXList();
+
+    List<String> getYList();
+
+    List<Map<String, Object>> getCharts();
+
 }

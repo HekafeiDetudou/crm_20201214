@@ -50,7 +50,7 @@
             $("#updateBtn").click(function (){
 
                 //alert("123");
-                //updatePwd();
+                updatePwd();
             })
 
         });
@@ -58,7 +58,38 @@
         //更改密码
         function updatePwd(){
 
+            //alert("123");
 
+            //原密码
+            var pwd1 = $.trim($("#oldPwd").val());
+            //新密码
+            var pwd2 = $.trim($("#newPwd").val());
+            //确认密码
+            var pwd3 = $.trim($("#confirmPwd").val());
+
+            //使用Ajax将密码传送到后台，然后返回一个Boolean值，如果是false，则对修改密码的模态窗口中的部分区域进行局部刷新
+            $.ajax({
+                url:"settings/visit/updatePwd.do",
+                data : {
+                    "pwd1": pwd1,
+                    "pwd2" : pwd2,
+                    "pwd3" : pwd3
+                },
+                type:"get",
+                dataType:"json",
+                success : function (data){
+
+                    if (data.success){
+
+                        //如果修改成功，跳转到登录页
+                        window.location.href = "login.jsp";
+                    }else {
+                        //登录失败，显示报错信息
+                        $("#msg").html(data.msg);
+                    }
+
+                }
+            })
 
         }
 
@@ -223,10 +254,10 @@
                     <li class="liClass"><a href="workbench/chart/activity/index.jsp"
                                            target="workareaFrame">&nbsp;&nbsp;&nbsp;<span
                             class="glyphicon glyphicon-chevron-right"></span> 市场活动统计图表</a></li>
-                    <li class="liClass"><a href="workbench/chart/clue/index.jsp" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span
+                    <%--<li class="liClass"><a href="workbench/chart/clue/index.jsp" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span
                             class="glyphicon glyphicon-chevron-right"></span> 线索统计图表</a></li>
                     <li class="liClass"><a href="workbench/chart/customerAndContacts/index.jsp" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span
-                            class="glyphicon glyphicon-chevron-right"></span> 客户和联系人统计图表</a></li>
+                            class="glyphicon glyphicon-chevron-right"></span> 客户和联系人统计图表</a></li>--%>
                     <li class="liClass"><a href="workbench/chart/transaction/index.jsp" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span
                             class="glyphicon glyphicon-chevron-right"></span> 交易统计图表</a></li>
                 </ul>

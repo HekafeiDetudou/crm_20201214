@@ -200,5 +200,23 @@
 
     </select>
 
+    <select id="getXList" resultType="String">
+        select name from tbl_activity ORDER BY startDate
+    </select>
+
+    <select id="getYList" resultType="String">
+        select cost from tbl_activity ORDER BY startDate
+    </select>
+
+    <select id="getCharts" resultType="Map">
+        SELECT
+            cost AS value,
+            name
+        FROM
+            tbl_activity
+        ORDER BY
+            startDate
+    </select>
+
 </mapper>
 

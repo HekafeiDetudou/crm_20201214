@@ -89,7 +89,29 @@ public class TranControllerServlet extends HttpServlet {
 
             editTran(request,response);
 
+        }else if ("/workbench/transaction/getCharts2.do".equals(path)){
+
+            getCharts2(request,response);
+
         }
+
+    }
+
+    //获取交易柱状图
+    private void getCharts2(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取交易柱状图");
+
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+
+        /*
+         * 业务层为我们返回
+         *       xList
+         *       yList
+         * */
+        Map<String,Object> map = tranService.getCharts2();
+
+        PrintJson.printJsonObj(response,map);
 
     }
 

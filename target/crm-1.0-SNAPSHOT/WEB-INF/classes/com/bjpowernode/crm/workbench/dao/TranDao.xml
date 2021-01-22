@@ -237,6 +237,24 @@
 
     </select>
 
+    <select id="getXList" resultType="String">
+        SELECT
+            stage
+        FROM
+            tbl_tran
+        GROUP BY
+            stage
+    </select>
+
+    <select id="getYList" resultType="String">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_tran
+        GROUP BY
+            stage
+    </select>
+
 </mapper>
 
 

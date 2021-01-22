@@ -29,4 +29,7 @@ public interface TranDao {
 
     Tran getACIdById(String id);
 
+    List<String> getXList();
+
+    List<String> getYList();
 }

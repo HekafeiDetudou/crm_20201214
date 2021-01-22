@@ -11,4 +11,9 @@ public interface UserService {
 
     List<User> getUserList();
 
+    boolean updatePwd(User user);
+
+    boolean checkLoginAct(String loginAct);
+
+    boolean addUser(User user);
 }

@@ -19,7 +19,12 @@ public class LoginFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String path = request.getServletPath();
-        if ("/login.jsp".equals(path) || "/settings/user/login.do".equals(path)){
+        if ("/login.jsp".equals(path)
+                || "/settings/user/login.do".equals(path)
+                || "/settings/visit/checkLoginAct.do".equals(path)
+                || "/settings/visit/userAdd.do".equals(path)
+
+        ){
 
             //如果是登录操作，则直接放行
             filterChain.doFilter(servletRequest,servletResponse);

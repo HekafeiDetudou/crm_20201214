@@ -57,7 +57,8 @@
         <servlet-name>userControllerServlet</servlet-name>
         <url-pattern>/settings/user/login.do</url-pattern>
         <url-pattern>/settings/visit/updatePwd.do</url-pattern>
-        <url-pattern>/settings/visit/checkPwd.do</url-pattern>
+        <url-pattern>/settings/visit/checkLoginAct.do</url-pattern>
+        <url-pattern>/settings/visit/userAdd.do</url-pattern>
     </servlet-mapping>
 
 
@@ -79,6 +80,8 @@
         <url-pattern>/workbench/activity/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
         <url-pattern>/workbench/activity/updateRemark.do</url-pattern>
+        <url-pattern>/workbench/activity/getCharts.do</url-pattern>
+        <url-pattern>/workbench/activity/getCharts2.do</url-pattern>
     </servlet-mapping>
 
 
@@ -176,6 +179,7 @@
         <url-pattern>/workbench/transaction/detail.do</url-pattern>
         <url-pattern>/workbench/transaction/getHistoryListByTranId.do</url-pattern>
         <url-pattern>/workbench/transaction/getCharts.do</url-pattern>
+        <url-pattern>/workbench/transaction/getCharts2.do</url-pattern>
         <url-pattern>/workbench/transaction/delete.do</url-pattern>
         <url-pattern>/workbench/transaction/getRemarkListByTranId.do</url-pattern>
         <url-pattern>/workbench/transaction/saveRemark.do</url-pattern>

@@ -38,4 +38,8 @@ public interface ActivityService {
 
     List<Activity> getActivityListByNameJust(String activityName);
 
+    Map<String, Object> getCharts2();
+
+    List<Map<String, Object>> getCharts();
+
 }

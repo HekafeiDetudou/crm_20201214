@@ -11,4 +11,10 @@ public interface UserDao {
 
     List<User> getUserList();
 
+    int updatePwd(User user);
+
+    int checkLoginAct(String loginAct);
+
+    int userAdd(User user);
+
 }

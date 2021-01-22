@@ -27,6 +27,8 @@
             //在页面加载完毕后，绘制统计图表
             getCharts();
 
+            //在页面加载完毕后，绘制统计图表
+            getCharts2();
 
         })
 
@@ -45,13 +47,25 @@
 
                     //alert("123");
                     // 基于准备好的dom，初始化echarts实例
-                    var myChart = echarts.init(document.getElementById('main'));
+                    var myChart = echarts.init(document.getElementById('main2'));
 
                     // 指定图表的配置项和数据
                     option = {
+                        toolbox: {
+                            feature: {
+                                dataView: {readOnly: false},
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        /*backgroundColor:'#00FA9A',*/
                         title: {
                             text: '交易漏斗图',
-                            subtext: '统计交易阶段数量的l漏斗图'
+                            subtext: '统计交易阶段数量的漏斗图'
                         },
 
                         series: [
@@ -105,6 +119,70 @@
                     };
 
 
+
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+
+
+                }
+            })
+
+
+
+        }
+
+
+        function getCharts2(){
+
+            $.ajax({
+                url:"workbench/transaction/getCharts2.do",
+                type:"post",
+                dataType:"json",
+                success : function (data){
+
+                    /*
+                    * data
+                    *       {""}
+                    * */
+
+                    //alert("123");
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('main'));
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '交易柱状图',
+                            subtext: '统计交易阶段数量的柱状图'
+                        },
+                        toolbox: {
+                            feature: {
+                                dataView: {readOnly: false},
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data:data.xList
+                            /*['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']*/
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data:data.yList /*[120, 200, 150, 80, 70, 110, 130]*/,
+                            type: 'bar',
+                            showBackground: false,
+                            backgroundStyle: {
+                                color: 'rgba(145, 958, 325, 0.8)'
+                            }
+                        }]
+                    };
+
+
+
                     // 使用刚指定的配置项和数据显示图表。
                     myChart.setOption(option);
 
@@ -122,12 +200,23 @@
 </head>
 <body>
 
-    <div style="margin:0 auto;width:960px;height:auto;">
+<div style="margin:0 auto;width:1200px;height:600px;">
 
-        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-        <div id="main" style="width: 600px;height:400px;" ></div>
+    <table cellspacing="0px"; border="0px"; width="1000px">
+        <tr>
+            <th style="text-align: left">
+                <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                <div id="main" style="width: 600px;height:600px; " ></div>
+            </th>
 
-    </div>
+            <th style="text-align: right">
+                <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                <div id="main2" style="width: 600px;height:600px; " ></div>
+            </th>
+        </tr>
+    </table>
+
+</div>
 
 
 </body>

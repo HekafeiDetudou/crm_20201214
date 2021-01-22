@@ -324,4 +324,23 @@ public class TranServiceImpl implements TranService {
         return tran;
 
     }
+
+    @Override
+    public Map<String, Object> getCharts2() {
+
+        //取得xLit
+        List<String> xList = tranDao.getXList();
+
+        //取得yList
+        List<String> yList = tranDao.getYList();
+
+        //将total和dataList保存到map中
+        Map<String,Object> map = new HashMap<>();
+        map.put("xList",xList);
+        map.put("yList",yList);
+
+        //返回map
+        return map;
+
+    }
 }

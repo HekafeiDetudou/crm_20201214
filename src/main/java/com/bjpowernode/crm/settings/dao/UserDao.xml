@@ -13,6 +13,46 @@
         select * from tbl_user
     </select>
 
+    <update id="updatePwd">
+        update tbl_user set loginPwd=#{loginPwd} where id = #{id}
+    </update>
+
+    <select id="checkLoginAct" resultType="int">
+
+        select count(*) from tbl_user where loginAct=#{loginAct}
+
+    </select>
+
+    <insert id="userAdd">
+        insert into tbl_user (
+            id,
+            loginAct,
+            name,
+            loginPwd,
+            email,
+            expireTime,
+            lockState,
+            deptno,
+            allowIps,
+            createTime,
+            createBy
+        )
+        values (
+
+            #{id},
+            #{loginAct},
+            #{name},
+            #{loginPwd},
+            #{email},
+            #{expireTime},
+            #{lockState},
+            #{deptno},
+            #{allowIps},
+            #{createTime},
+            #{createBy}
+
+        )
+    </insert>
 
 </mapper>
 

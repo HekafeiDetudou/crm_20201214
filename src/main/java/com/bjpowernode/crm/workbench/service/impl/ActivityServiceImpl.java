@@ -197,5 +197,35 @@ public class ActivityServiceImpl implements ActivityService {
 
     }
 
+    @Override
+    public Map<String, Object> getCharts2() {
+
+        //取得xLit
+        List<String> xList = activityDao.getXList();
+
+        //取得yList
+        List<String> yList = activityDao.getYList();
+
+        //将total和dataList保存到map中
+        Map<String,Object> map = new HashMap<>();
+        map.put("xList",xList);
+        map.put("yList",yList);
+
+        //返回map
+        return map;
+
+    }
+
+    @Override
+    public List<Map<String, Object>> getCharts() {
+
+        //取得dataList
+        List<Map<String,Object>> dataList = activityDao.getCharts();
+
+        //返回取得dataList
+        return dataList;
+
+    }
+
 
 }

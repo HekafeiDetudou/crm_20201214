@@ -8,7 +8,9 @@ import com.bjpowernode.crm.vo.PaginationVO;
 import com.bjpowernode.crm.workbench.entity.Activity;
 import com.bjpowernode.crm.workbench.entity.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.TranService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
+import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -72,7 +74,46 @@ public class ActivityControllerServlet extends HttpServlet {
 
             updateRemark(req,resp);
 
+        }else if ("/workbench/activity/getCharts2.do".equals(path)){
+
+            getCharts2(req,resp);
+
+        }else if ("/workbench/activity/getCharts.do".equals(path)){
+
+            getCharts(req,resp);
+
         }
+
+    }
+
+    //获取饼图的图表数据
+    private void getCharts(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取饼图的图表数据");
+
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        List<Map<String,Object>> mapList = activityService.getCharts();
+
+        PrintJson.printJsonObj(response,mapList);
+
+    }
+
+    //获取折线图的图表数据
+    private void getCharts2(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("获取折线图的图表数据");
+
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        /*
+         * 业务层为我们返回
+         *       xList
+         *       yList
+         * */
+        Map<String,Object> map = activityService.getCharts2();
+
+        PrintJson.printJsonObj(response,map);
 
     }
 
